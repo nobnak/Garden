@@ -9,7 +9,7 @@ public class Planter : MonoBehaviour {
 	public float plantRange = 1f;
     public float neighborRange = 2f;
 	public float frequency = 10f;
-    public Vector2 interference = new Vector2 (1.6f, -0.2f);
+    public Vector2 interference = new Vector2 (-0.2f, 1.6f);
 
 	float _time;
 	float _lastHitTime;
