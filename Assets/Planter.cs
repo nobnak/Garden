@@ -7,7 +7,6 @@ public class Planter : MonoBehaviour {
     public FabData[] plantfabs;
 	public Collider groundCollider;
 	public float plantRange = 1f;
-    public float neighborRange = 2f;
 	public float frequency = 10f;
     public Vector2 interference = new Vector2 (-0.2f, 1.6f);
 
@@ -37,7 +36,7 @@ public class Planter : MonoBehaviour {
 				_lastHitTime = Time.timeSinceLevelLoad;
 				_lastHitPoint = hit.point;
 
-                FindNeighbors (_tmpNeighbors, hit.point, neighborRange);
+                FindNeighbors (_tmpNeighbors, hit.point, plantRange);
                 UpdateWeights (_tmpNeighbors);
                 _weightMax = Sampling.RouletteWheelSelection.MaxWeight (_tmpWeights);
                 Debug.Log(StatFrequency (_tmpNeighbors));

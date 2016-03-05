@@ -112,7 +112,7 @@ Transform:
   m_GameObject: {fileID: 119556594}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 100}
-  m_LocalScale: {x: 35.04702, y: 20, z: 1}
+  m_LocalScale: {x: 17.46875, y: 10, z: 1}
   m_Children: []
   m_Father: {fileID: 1224466126}
   m_RootOrder: 0
@@ -166,14 +166,14 @@ MeshCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Convex: 0
-  m_Mesh: {fileID: 1823288176}
+  m_Mesh: {fileID: 2100264982}
 --- !u!33 &119556599
 MeshFilter:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 119556594}
-  m_Mesh: {fileID: 1823288176}
+  m_Mesh: {fileID: 2100264982}
 --- !u!1 &1224466121
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +234,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 20
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -290,20 +290,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   plantfabs:
   - weight: 1
-    fab: {fileID: 174776, guid: 342ae1c8abae9c64195d81b2f9a0d09a, type: 2}
+    fab: {fileID: 166020, guid: 620c64c9d6497dd4a817fe1163f6ee05, type: 2}
   - weight: 1
-    fab: {fileID: 174776, guid: 6bfd9e4e3b6f62b41b3002d6d94fe8c9, type: 2}
+    fab: {fileID: 123272, guid: 79a778ea9b9c3fc4e84ea9bf5010b4e9, type: 2}
   - weight: 1
-    fab: {fileID: 174776, guid: 8831aea848e7d7445ab711bdfde8af81, type: 2}
+    fab: {fileID: 188800, guid: fc1db15d6377e6547a935e8082c63e80, type: 2}
   - weight: 1
-    fab: {fileID: 174776, guid: 7fe27a280b75d154f8ccd584ed87dcf6, type: 2}
-  - weight: 1
-    fab: {fileID: 174776, guid: 4507a297c57153a4f964e91bd19b4c65, type: 2}
+    fab: {fileID: 178066, guid: c45a5540785e57047b2a7d6a3d1f96b8, type: 2}
   groundCollider: {fileID: 119556598}
-  plantRange: 5
-  neighborRange: 5
+  plantRange: 2
+  neighborRange: 2
   frequency: 30
-  interference: {x: -0.2, y: 1.1}
+  interference: {x: -0.2, y: 1.2}
 --- !u!4 &1618437050
 Transform:
   m_ObjectHideFlags: 0
@@ -377,7 +375,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
---- !u!43 &1823288176
+--- !u!43 &2100264982
 Mesh:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
