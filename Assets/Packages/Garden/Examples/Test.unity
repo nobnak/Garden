@@ -470,6 +470,7 @@ MonoBehaviour:
   - {fileID: 189242, guid: ff5653ef934d9154f91e4883332ff450, type: 2}
   plantRange: 1
   interference: 1.1
+  rotationSpeed: {x: 30, y: 1, z: 0.05}
 --- !u!4 &1618437050
 Transform:
   m_ObjectHideFlags: 0

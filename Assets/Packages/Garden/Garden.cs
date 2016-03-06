@@ -11,6 +11,8 @@ namespace GardenSystem {
         public float plantRange = 1f;
         public float interference = 1.2f;
 
+        public Vector3 rotationSpeed = new Vector3 (10f, 0.1f, 0.1f);
+
         float _lastReproduceTime;
         Vector3 _lastReproduceLocalPos;
         List<PlantData> _plants;
@@ -29,6 +31,18 @@ namespace GardenSystem {
             if ((Time.timeSinceLevelLoad - _lastReproduceTime) < 3f) {
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere (transform.TransformPoint (_lastReproduceLocalPos), plantRange);
+            }
+        }
+        void Update() {
+            var t = Time.timeSinceLevelLoad * rotationSpeed.z;
+            var loop = _plants.Count;
+            for (var i = 0; i < loop; i++) {
+                var tr = _plants [i].obj.transform;
+                var localPos = tr.localPosition;
+                tr.localRotation = Quaternion.Euler (
+                    rotationSpeed.x * Noise(rotationSpeed.y * localPos.x, rotationSpeed.y * localPos.y + t),
+                    0f, 
+                    rotationSpeed.x * Noise (rotationSpeed.y * localPos.y + t, rotationSpeed.x * localPos.y));
             }
         }
 
@@ -82,6 +96,9 @@ namespace GardenSystem {
             var t = rate / interference;
             return Mathf.SmoothStep (1f, 0f, t);
         }
+        float Noise(float x, float y) {
+            return 2f * Mathf.PerlinNoise (x, y) - 1f;
+        }            
 
         public class PlantData {
             public int typeId;
