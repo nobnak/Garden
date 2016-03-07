@@ -21,11 +21,14 @@ namespace Gist {
                     body ((int)k);
                 _resets [ii].Set ();
             });
-            for (var i = 0; i < numThreads; i++)
-                ThreadPool.QueueUserWorkItem (work, i);
+
+            lock (_resets) {
+                for (var i = 0; i < numThreads; i++)
+                    ThreadPool.QueueUserWorkItem (work, i);
             
-			for (var i = 0; i < numThreads; i++)
-				_resets [i].WaitOne ();
+                for (var i = 0; i < numThreads; i++)
+                    _resets [i].WaitOne ();
+            }
 		}
         public static void SerialFor(int fromInclusive, int toExclusive, System.Action<int> body) {
             for (var i = fromInclusive; i < toExclusive; i++)
