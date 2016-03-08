@@ -462,6 +462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 1224466125}
+  noiseMap: {fileID: 2115535764}
   plantfabs:
   - {fileID: 189242, guid: 1112f95025acaa44fb96aefc30de4c82, type: 2}
   - {fileID: 189242, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
@@ -470,6 +471,7 @@ MonoBehaviour:
   - {fileID: 189242, guid: ff5653ef934d9154f91e4883332ff450, type: 2}
   plantRange: 1
   interference: 1.1
+  initRotScale: 5
   rotationSpeed: {x: 30, y: 1, z: 0.05}
 --- !u!4 &1618437050
 Transform:
@@ -556,3 +558,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!1 &2115535763
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2115535765}
+  - 114: {fileID: 2115535764}
+  m_Layer: 0
+  m_Name: Scree Noise Map
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2115535764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2115535763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fc708c528a2758478b2389a9fc2c76b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugMode: 0
+  debugMat: {fileID: 2100000, guid: 4608b552e0e59e94ab5a6892e439be1b, type: 2}
+  OnCreateTexture:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Gist.ScreenNoiseMap+TextureEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  targetCam: {fileID: 1224466125}
+  lod: 4
+  fieldSize: 10
+  noiseFreq: 2
+  timeScale: 0.1
+--- !u!4 &2115535765
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2115535763}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4

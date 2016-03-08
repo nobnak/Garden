@@ -259,11 +259,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fc708c528a2758478b2389a9fc2c76b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugMode: 1
+  debugMat: {fileID: 2100000, guid: 4608b552e0e59e94ab5a6892e439be1b, type: 2}
+  OnCreateTexture:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Gist.ScreenNoiseMap+TextureEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   targetCam: {fileID: 948528461}
   lod: 4
   fieldSize: 1
   noiseFreq: 1
-  timeScale: 0.1
+  timeScale: 0.5
 --- !u!4 &1139081535
 Transform:
   m_ObjectHideFlags: 0

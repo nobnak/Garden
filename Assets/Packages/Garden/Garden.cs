@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Text;
+using Gist;
 
 namespace GardenSystem {
 
     public class Garden : MonoBehaviour {
+        public const float ROUND_IN_DEG = 360f;
+
         public Camera targetCamera;
+        public ScreenNoiseMap noiseMap;
+
         public GameObject[] plantfabs;
         public float plantRange = 1f;
         public float interference = 1.2f;
 
+        public float initRotScale = 1f;
         public Vector3 rotationSpeed = new Vector3 (10f, 0.1f, 0.1f);
 
         float _lastReproduceTime;
@@ -34,15 +40,14 @@ namespace GardenSystem {
             }
         }
         void Update() {
-            var t = Time.timeSinceLevelLoad * rotationSpeed.z;
             var loop = _plants.Count;
+            var z2y = Quaternion.Euler (-90f, 0f, 0f);
+            var y2z = Quaternion.Inverse (z2y);
             for (var i = 0; i < loop; i++) {
-                var tr = _plants [i].obj.transform;
-                var localPos = tr.localPosition;
-                tr.localRotation = Quaternion.Euler (
-                    rotationSpeed.x * Noise(rotationSpeed.y * localPos.x, rotationSpeed.y * localPos.y + t),
-                    0f, 
-                    rotationSpeed.x * Noise (rotationSpeed.y * localPos.y + t, rotationSpeed.x * localPos.y));
+                var p = _plants [i];
+                var tr = p.obj.transform;
+                var n = noiseMap.GetNormal (p.screenUv.x, p.screenUv.y);
+                tr.localRotation = z2y * Quaternion.LookRotation (n) * y2z * p.initRotation;
             }
         }
 
@@ -60,7 +65,9 @@ namespace GardenSystem {
             var plant = Instantiate (plantfabs [typeId]);
             plant.transform.SetParent (transform, false);
             plant.transform.localPosition = localPos;
-            _plants.Add (new PlantData (){ typeId = typeId, obj = plant });
+            var gaussian = BoxMuller.Gaussian ();
+            var rot = Quaternion.Euler (initRotScale * gaussian.x, Random.Range(0f, ROUND_IN_DEG), initRotScale * gaussian.y);
+            _plants.Add (new PlantData (){ typeId = typeId, obj = plant, screenUv = viewportPos, initRotation = rot });
             _totalCount++;
 
             _lastReproduceTime = Time.timeSinceLevelLoad;
@@ -102,6 +109,8 @@ namespace GardenSystem {
 
         public class PlantData {
             public int typeId;
+            public Vector2 screenUv;
+            public Quaternion initRotation;
             public GameObject obj;
         }
     }
