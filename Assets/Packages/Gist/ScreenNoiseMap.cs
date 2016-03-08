@@ -2,8 +2,8 @@
 using System.Collections;
 
 namespace Gist {
-
-public class ScreenNoiseMap : MonoBehaviour {
+    [ExecuteInEditMode]
+    public class ScreenNoiseMap : MonoBehaviour {
         public enum TextureTypeEnum { HeightNormal = 0, Height, Normal }
         public enum DebugModeEnum { Normal = 0, Show }
         public const float SEED_SIZE = 100f;
@@ -22,7 +22,7 @@ public class ScreenNoiseMap : MonoBehaviour {
         Color[] _noiseColors;
         Vector3 _seeds;
 
-        void Awake() {
+        void OnEnable() {
             _seeds = SEED_SIZE * new Vector3 (Random.value, Random.value, Random.value);
         }
     	void Update () {
@@ -48,7 +48,7 @@ public class ScreenNoiseMap : MonoBehaviour {
                 GL.PopMatrix ();
             }
         }
-        void OnDestroy() {
+        void OnDisable() {
             ReleaseTex ();
         }
 
@@ -120,7 +120,7 @@ public class ScreenNoiseMap : MonoBehaviour {
         }
 
         void ReleaseTex () {
-            Destroy (_noiseTex);
+            DestroyImmediate(_noiseTex);
         }
 
         [System.Serializable]
