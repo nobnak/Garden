@@ -19,16 +19,17 @@ namespace GardenSystem {
         public float initRotScale = 1f;
         public Vector3 rotationSpeed = new Vector3 (10f, 0.1f, 0.1f);
 
+        public readonly List<PlantData> Plants = new List<PlantData>();
+
         float _lastReproduceTime;
         Vector3 _lastReproduceLocalPos;
-        List<PlantData> _plants;
         int _totalCount;
 
         int[] _tmpTypeCounts;
 
     	void OnEnable() {
     		_lastReproduceTime = float.MinValue;
-            _plants = new List<PlantData> ();
+            Plants.Clear ();
             _totalCount = 0;
 
             _tmpTypeCounts = new int[plantfabs.Length];
@@ -40,18 +41,18 @@ namespace GardenSystem {
             }
         }
         void Update() {
-            var loop = _plants.Count;
+            var loop = Plants.Count;
             var z2y = Quaternion.Euler (-90f, 0f, 0f);
             var y2z = Quaternion.Inverse (z2y);
             for (var i = 0; i < loop; i++) {
-                var p = _plants [i];
+                var p = Plants [i];
                 var tr = p.obj.transform;
                 var n = noiseMap.GetNormal (p.screenUv.x, p.screenUv.y);
                 tr.localRotation = z2y * Quaternion.LookRotation (n) * y2z * p.initRotation;
             }
         }
 
-        public bool Reproduce(Vector2 viewportPos) {
+        public bool Add(Vector2 viewportPos, out GameObject plant) {
             var localPos = transform.InverseTransformPoint (targetCamera.ViewportToWorldPoint (viewportPos));
             localPos += plantRange * Random.insideUnitSphere;
             localPos.y = 0f;
@@ -59,20 +60,35 @@ namespace GardenSystem {
             var totalCount = CountNeighbors (_tmpTypeCounts, localPos, plantRange);
 
             int typeId;
-            if (!RouletteWheelSelection.Sample (out typeId, int.MaxValue, 1f, WeightFunc(_tmpTypeCounts, totalCount), plantfabs.Length))
+            var w = WeightFunc (_tmpTypeCounts, totalCount);
+            if (!RouletteWheelSelection.Sample (out typeId, int.MaxValue, 1f, w, plantfabs.Length)) {
+                plant = null;
                 return false;
+            }
 
-            var plant = Instantiate (plantfabs [typeId]);
+            plant = Instantiate (plantfabs [typeId]);
             plant.transform.SetParent (transform, false);
             plant.transform.localPosition = localPos;
             var gaussian = BoxMuller.Gaussian ();
             var rot = Quaternion.Euler (initRotScale * gaussian.x, Random.Range(0f, ROUND_IN_DEG), initRotScale * gaussian.y);
-            _plants.Add (new PlantData (){ typeId = typeId, obj = plant, screenUv = viewportPos, initRotation = rot });
+            Plants.Add (new PlantData (){ typeId = typeId, obj = plant, screenUv = viewportPos, initRotation = rot });
             _totalCount++;
 
             _lastReproduceTime = Time.timeSinceLevelLoad;
             _lastReproduceLocalPos = localPos;
             return true;
+        }
+        public bool Remove(GameObject plant) {
+            return Plants.RemoveAll ((p) => p.obj == plant) > 0;
+        }
+        public IEnumerable<PlantData> Neighbors(Vector2 centerUv, float radius) {
+            var center = targetCamera.ViewportToWorldPoint (centerUv);
+            var r2 = radius * radius;
+            foreach (var p in Plants) {
+                var d2 = (p.obj.transform.localPosition - center).sqrMagnitude;
+                if (d2 < r2)
+                    yield return p;
+            }
         }
 
         int CountNeighbors(int[] typeCounters, Vector3 center, float radius) {
@@ -80,7 +96,7 @@ namespace GardenSystem {
 
             var r2 = radius * radius;
             var total = 0;
-            foreach (var p in _plants) {
+            foreach (var p in Plants) {
                 var d2 = (p.obj.transform.localPosition - center).sqrMagnitude;
                 if (d2 < r2) {
                     typeCounters [p.typeId]++;                    
