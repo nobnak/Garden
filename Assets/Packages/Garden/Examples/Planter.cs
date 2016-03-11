@@ -17,7 +17,6 @@ namespace GardenSystem {
                 float sqrDist = float.MaxValue;
                 var uv = GetUv ();
                 var screenPos = GetScreenPos (uv);
-                Debug.LogFormat("Sceen pos {0}", screenPos);
                 foreach (var p in garden.Neighbors(uv, searchRadius)) {
                     var d = GetScreenPos (p.screenUv) - screenPos;
                     if (d.sqrMagnitude < sqrDist) {
@@ -27,8 +26,8 @@ namespace GardenSystem {
                 }
 
                 if (plant != null) {
-                    Debug.Log ("Remove nearest plant");
-                    garden.Remove (plant.obj);
+                    if (garden.Remove (plant.obj))
+                        Destroy (plant.obj);
                 }
             }
     	}

@@ -49,12 +49,12 @@ namespace GardenSystem {
             }
         }
 
-        public bool Add(Vector2 viewportPos, out GameObject plant) {
-            var localPos = transform.InverseTransformPoint (targetCamera.ViewportToWorldPoint (viewportPos));
+        public bool Add(Vector2 uvPos, out GameObject plant) {
+            var localPos = Uv2LocalPos (uvPos);
             localPos += plantRange * Random.insideUnitSphere;
             localPos.y = 0f;
 
-            var totalCount = CountNeighbors (_tmpTypeCounts, localPos, plantRange);
+            var totalCount = CountNeighbors (_tmpTypeCounts, uvPos, plantRange);
 
             int typeId;
             var w = WeightFunc (_tmpTypeCounts, totalCount);
@@ -68,7 +68,7 @@ namespace GardenSystem {
             plant.transform.localPosition = localPos;
             var gaussian = BoxMuller.Gaussian ();
             var rot = Quaternion.Euler (initRotScale * gaussian.x, Random.Range(0f, ROUND_IN_DEG), initRotScale * gaussian.y);
-            Plants.Add (new PlantData (){ typeId = typeId, obj = plant, screenUv = viewportPos, initRotation = rot });
+            Plants.Add (new PlantData (){ typeId = typeId, obj = plant, screenUv = uvPos, initRotation = rot });
             _totalCount++;
 
             _lastReproduceTime = Time.timeSinceLevelLoad;
@@ -78,29 +78,30 @@ namespace GardenSystem {
         public bool Remove(GameObject plant) {
             return Plants.RemoveAll ((p) => p.obj == plant) > 0;
         }
-        public IEnumerable<PlantData> Neighbors(Vector2 centerUv, float radius) {
-            var center = targetCamera.transform.InverseTransformPoint(targetCamera.ViewportToWorldPoint (centerUv));
+        public IEnumerable<PlantData> Neighbors(Vector2 uvPos, float radius) {
+            var localPos = Uv2LocalPos (uvPos);
             var r2 = radius * radius;
             foreach (var p in Plants) {
-                var d2 = (p.obj.transform.localPosition - center).sqrMagnitude;
+                var d2 = (p.obj.transform.localPosition - localPos).sqrMagnitude;
                 if (d2 < r2)
                     yield return p;
             }
         }
 
-        int CountNeighbors(int[] typeCounters, Vector3 center, float radius) {
+        Vector3 Uv2LocalPos(Vector2 uvPos) {
+            var localPos = transform.InverseTransformPoint (targetCamera.ViewportToWorldPoint (uvPos));
+            localPos.y = 0f;
+            return localPos;
+        }
+
+        int CountNeighbors(int[] typeCounters, Vector2 uvPos, float radius) {
             System.Array.Clear (typeCounters, 0, typeCounters.Length);
 
-            var r2 = radius * radius;
             var total = 0;
-            foreach (var p in Plants) {
-                var d2 = (p.obj.transform.localPosition - center).sqrMagnitude;
-                if (d2 < r2) {
-                    typeCounters [p.typeId]++;                    
-                    total++;
-                }
+            foreach (var p in Neighbors(uvPos, radius)) {
+                typeCounters [p.typeId]++;                    
+                total++;
             }
-
             return total;
         }
         System.Func<int, float> WeightFunc(int[] typeCounters, int totalCount) {
