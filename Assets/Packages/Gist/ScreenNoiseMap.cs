@@ -63,9 +63,14 @@ namespace Gist {
             ReleaseTex ();
         }
 
-        public Vector3 GetNormal(float u, float v) {
+        public Vector3 GetNormalZ(float u, float v) {
             var c = _noiseTex.GetPixelBilinear (u, v);
             var n = new Vector3 (2f * c.r - 1f, 2f * c.g - 1f, 2f * c.b - 1f);
+            return n.normalized;
+        }
+        public Vector3 GetNormalY(float u, float v) {
+            var c = _noiseTex.GetPixelBilinear (u, v);
+            var n = new Vector3 (2f * c.r - 1f, 2f * c.b - 1f, 2f * c.g - 1f);
             return n.normalized;
         }
         public float GetHeight(float u, float v) {

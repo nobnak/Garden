@@ -17,7 +17,6 @@ namespace GardenSystem {
         public float interference = 1.2f;
 
         public float initRotScale = 1f;
-        public Vector3 rotationSpeed = new Vector3 (10f, 0.1f, 0.1f);
 
         public readonly List<PlantData> Plants = new List<PlantData>();
 
@@ -41,14 +40,12 @@ namespace GardenSystem {
             }
         }
         void Update() {
-            var loop = Plants.Count;
-            var z2y = Quaternion.Euler (-90f, 0f, 0f);
-            var y2z = Quaternion.Inverse (z2y);
-            for (var i = 0; i < loop; i++) {
+            var count = Plants.Count;
+            for (var i = 0; i < count; i++) {
                 var p = Plants [i];
                 var tr = p.obj.transform;
-                var n = noiseMap.GetNormal (p.screenUv.x, p.screenUv.y);
-                tr.localRotation = z2y * Quaternion.LookRotation (n) * y2z * p.initRotation;
+                var n = noiseMap.GetNormalY(p.screenUv.x, p.screenUv.y);
+                tr.localRotation = Quaternion.FromToRotation(Vector3.up, n) * p.initRotation;
             }
         }
 
@@ -82,7 +79,7 @@ namespace GardenSystem {
             return Plants.RemoveAll ((p) => p.obj == plant) > 0;
         }
         public IEnumerable<PlantData> Neighbors(Vector2 centerUv, float radius) {
-            var center = targetCamera.ViewportToWorldPoint (centerUv);
+            var center = targetCamera.transform.InverseTransformPoint(targetCamera.ViewportToWorldPoint (centerUv));
             var r2 = radius * radius;
             foreach (var p in Plants) {
                 var d2 = (p.obj.transform.localPosition - center).sqrMagnitude;
