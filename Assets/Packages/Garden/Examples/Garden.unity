@@ -163,6 +163,10 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 417742, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
   m_PrefabInternal: {fileID: 399472229}
+--- !u!1 &797277379 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 189242, guid: a9e699495234d9e49a8d30a77d7e2752, type: 2}
+  m_PrefabInternal: {fileID: 888367929}
 --- !u!1001 &888367929
 Prefab:
   m_ObjectHideFlags: 0
@@ -209,6 +213,10 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 417742, guid: a9e699495234d9e49a8d30a77d7e2752, type: 2}
   m_PrefabInternal: {fileID: 888367929}
+--- !u!1 &942785504 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 189242, guid: ff5653ef934d9154f91e4883332ff450, type: 2}
+  m_PrefabInternal: {fileID: 1462248712}
 --- !u!1001 &1001917910
 Prefab:
   m_ObjectHideFlags: 0
@@ -255,6 +263,14 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 417742, guid: 63b1658c41339404588dd08eddaab470, type: 2}
   m_PrefabInternal: {fileID: 1001917910}
+--- !u!1 &1011387980 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 189242, guid: 1112f95025acaa44fb96aefc30de4c82, type: 2}
+  m_PrefabInternal: {fileID: 1533633569}
+--- !u!1 &1143583026 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 189242, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
+  m_PrefabInternal: {fileID: 399472229}
 --- !u!1 &1224466121
 GameObject:
   m_ObjectHideFlags: 0
@@ -314,7 +330,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 10
   m_Depth: -1
   m_CullingMask:
@@ -336,7 +352,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1224466121}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 100, z: 0}
+  m_LocalPosition: {x: 0, y: 20, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -462,17 +478,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 1224466125}
-  noiseMap: {fileID: 2115535764}
-  plantfabs:
-  - {fileID: 189242, guid: 1112f95025acaa44fb96aefc30de4c82, type: 2}
-  - {fileID: 189242, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
-  - {fileID: 189242, guid: a9e699495234d9e49a8d30a77d7e2752, type: 2}
-  - {fileID: 189242, guid: 63b1658c41339404588dd08eddaab470, type: 2}
-  - {fileID: 189242, guid: ff5653ef934d9154f91e4883332ff450, type: 2}
   plantRange: 1
-  interference: 1.1
-  initRotScale: 5
-  rotationSpeed: {x: 30, y: 1, z: 0.05}
+  interference: 1.12
 --- !u!4 &1618437050
 Transform:
   m_ObjectHideFlags: 0
@@ -497,6 +504,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   garden: {fileID: 1618437049}
+  noiseMap: {fileID: 2115535764}
+  planttypes:
+  - {fileID: 2111876994}
+  - {fileID: 942785504}
+  - {fileID: 1011387980}
+  - {fileID: 797277379}
+  - {fileID: 1143583026}
+  searchRadius: 1
+  tiltPower: 1
 --- !u!1 &1694637576
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,6 +574,10 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!1 &2111876994 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 189242, guid: 63b1658c41339404588dd08eddaab470, type: 2}
+  m_PrefabInternal: {fileID: 1001917910}
 --- !u!1 &2115535763
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,98 +7,67 @@ using Gist;
 namespace GardenSystem {
 
     public class Garden : MonoBehaviour {
-        public const float ROUND_IN_DEG = 360f;
-
         public Camera targetCamera;
-        public ScreenNoiseMap noiseMap;
 
-        public GameObject[] plantfabs;
         public float plantRange = 1f;
         public float interference = 1.2f;
 
-        public float initRotScale = 1f;
-
-        public readonly List<PlantData> Plants = new List<PlantData>();
-
-        float _lastReproduceTime;
-        Vector3 _lastReproduceLocalPos;
-        int _totalCount;
-
-        int[] _tmpTypeCounts;
+        HashGrid<PlantData> _plants;
+        int _typeCount;
+        int[] _tmpCountPerType;
 
     	void OnEnable() {
-    		_lastReproduceTime = float.MinValue;
-            Plants.Clear ();
-            _totalCount = 0;
-
-            _tmpTypeCounts = new int[plantfabs.Length];
+            _plants = new HashGrid<PlantData> ((p) => p.transform.localPosition);
+            InitTypeCount (_typeCount = 0);
         }
-        void OnDrawGizmos() {
-            if ((Time.timeSinceLevelLoad - _lastReproduceTime) < 3f) {
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere (transform.TransformPoint (_lastReproduceLocalPos), plantRange);
+        void OnDisable() {
+            _plants.Dispose ();
+        }
+
+        public void InitTypeCount(int typeCount) {
+            if (_tmpCountPerType == null || _tmpCountPerType.Length < typeCount) {
+                _typeCount = Mathf.Max (_typeCount, typeCount);
+                System.Array.Resize (ref _tmpCountPerType, _typeCount);
             }
         }
-        void Update() {
-            var count = Plants.Count;
-            for (var i = 0; i < count; i++) {
-                var p = Plants [i];
-                var tr = p.obj.transform;
-                var n = noiseMap.GetNormalY(p.screenUv.x, p.screenUv.y);
-                tr.localRotation = Quaternion.FromToRotation(Vector3.up, n) * p.initRotation;
-            }
-        }
-
-        public bool Add(Vector2 uvPos, out GameObject plant) {
-            var localPos = Uv2LocalPos (uvPos);
-            localPos += plantRange * Random.insideUnitSphere;
-            localPos.y = 0f;
-
-            var totalCount = CountNeighbors (_tmpTypeCounts, uvPos, plantRange);
-
+        public int Sample(Vector3 localPos) {
+            var totalCount = CountNeighbors(_tmpCountPerType, localPos, plantRange);
+            var w = WeightFunc(_tmpCountPerType, totalCount);
             int typeId;
-            var w = WeightFunc (_tmpTypeCounts, totalCount);
-            if (!RouletteWheelSelection.Sample (out typeId, int.MaxValue, 1f, w, plantfabs.Length)) {
-                plant = null;
-                return false;
-            }
-
-            plant = Instantiate (plantfabs [typeId]);
+            if (RouletteWheelSelection.Sample (out typeId, int.MaxValue, 1f, w, _typeCount))
+                return typeId;
+            return -1;
+        }
+        public void Add(int typeId, Transform plant) {
             plant.transform.SetParent (transform, false);
-            plant.transform.localPosition = localPos;
-            var gaussian = BoxMuller.Gaussian ();
-            var rot = Quaternion.Euler (initRotScale * gaussian.x, Random.Range(0f, ROUND_IN_DEG), initRotScale * gaussian.y);
-            Plants.Add (new PlantData (){ typeId = typeId, obj = plant, screenUv = uvPos, initRotation = rot });
-            _totalCount++;
-
-            _lastReproduceTime = Time.timeSinceLevelLoad;
-            _lastReproduceLocalPos = localPos;
-            return true;
+            _plants.Add (new PlantData (){ typeId = typeId, transform = plant });
         }
-        public bool Remove(GameObject plant) {
-            return Plants.RemoveAll ((p) => p.obj == plant) > 0;
+        public void Remove(Transform plant) {
+            var p = _plants.Find((i) => i.transform == plant);
+            if (p != null)
+                _plants.Remove (p);
         }
-        public IEnumerable<PlantData> Neighbors(Vector2 uvPos, float radius) {
-            var localPos = Uv2LocalPos (uvPos);
-            var r2 = radius * radius;
-            foreach (var p in Plants) {
-                var d2 = (p.obj.transform.localPosition - localPos).sqrMagnitude;
-                if (d2 < r2)
-                    yield return p;
-            }
+        public IEnumerable<PlantData> Neighbors(Vector3 center, float distance) {
+            return _plants.Neighbors (center, distance);
         }
-
-        Vector3 Uv2LocalPos(Vector2 uvPos) {
-            var localPos = transform.InverseTransformPoint (targetCamera.ViewportToWorldPoint (uvPos));
+        public Vector3 Locate(Vector2 uvPos) {
+            var ray = targetCamera.ViewportPointToRay (uvPos);
+            var plane = new Plane (transform.up, 0f);
+            float t;
+            if (!plane.Raycast (ray, out t))
+                throw new System.Exception ("Impossible!");
+            return Project (transform.InverseTransformPoint (ray.GetPoint (t)));
+        }
+        public Vector3 Project(Vector3 localPos) {
             localPos.y = 0f;
             return localPos;
         }
 
-        int CountNeighbors(int[] typeCounters, Vector2 uvPos, float radius) {
+        int CountNeighbors(int[] typeCounters, Vector3 center, float radius) {
             System.Array.Clear (typeCounters, 0, typeCounters.Length);
 
             var total = 0;
-            foreach (var p in Neighbors(uvPos, radius)) {
+            foreach (var p in _plants.Neighbors(center, radius)) {
                 typeCounters [p.typeId]++;                    
                 total++;
             }
@@ -117,15 +86,10 @@ namespace GardenSystem {
             var t = rate / interference;
             return Mathf.SmoothStep (1f, 0f, t);
         }
-        float Noise(float x, float y) {
-            return 2f * Mathf.PerlinNoise (x, y) - 1f;
-        }            
 
         public class PlantData {
             public int typeId;
-            public Vector2 screenUv;
-            public Quaternion initRotation;
-            public GameObject obj;
+            public Transform transform;
         }
     }
 }

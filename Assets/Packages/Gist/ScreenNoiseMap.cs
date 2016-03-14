@@ -63,15 +63,19 @@ namespace Gist {
             ReleaseTex ();
         }
 
-        public Vector3 GetNormalZ(float u, float v) {
-            var c = _noiseTex.GetPixelBilinear (u, v);
+        public Vector3 GetZNormalFromUv(Vector2 uv) {
+            var c = _noiseTex.GetPixelBilinear (uv.x, uv.y);
             var n = new Vector3 (2f * c.r - 1f, 2f * c.g - 1f, 2f * c.b - 1f);
             return n.normalized;
         }
-        public Vector3 GetNormalY(float u, float v) {
-            var c = _noiseTex.GetPixelBilinear (u, v);
+        public Vector3 GetYNormalFromUv(Vector2 uv) {
+            var c = _noiseTex.GetPixelBilinear (uv.x, uv.y);
             var n = new Vector3 (2f * c.r - 1f, 2f * c.b - 1f, 2f * c.g - 1f);
             return n.normalized;
+        }
+        public Vector2 GetYNormalFromWorldPos(Vector3 worldPos) {
+            var uv = targetCam.WorldToViewportPoint(worldPos);
+            return GetYNormalFromUv (uv);
         }
         public float GetHeight(float u, float v) {
             var c = _noiseTex.GetPixelBilinear (u, v);
