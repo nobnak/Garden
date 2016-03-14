@@ -50,18 +50,6 @@ namespace GardenSystem {
         public IEnumerable<PlantData> Neighbors(Vector3 center, float distance) {
             return _plants.Neighbors (center, distance);
         }
-        public Vector3 Locate(Vector2 uvPos) {
-            var ray = targetCamera.ViewportPointToRay (uvPos);
-            var plane = new Plane (transform.up, 0f);
-            float t;
-            if (!plane.Raycast (ray, out t))
-                throw new System.Exception ("Impossible!");
-            return Project (transform.InverseTransformPoint (ray.GetPoint (t)));
-        }
-        public Vector3 Project(Vector3 localPos) {
-            localPos.y = 0f;
-            return localPos;
-        }
 
         int CountNeighbors(int[] typeCounters, Vector3 center, float radius) {
             System.Array.Clear (typeCounters, 0, typeCounters.Length);

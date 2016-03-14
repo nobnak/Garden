@@ -27,7 +27,7 @@ namespace GardenSystem {
                 if (typeId >= 0) {
                     var p = Instantiate (planttypes [typeId]);
                     AddPlant (typeId, p);
-                    p.transform.localPosition = garden.Project (localPos + garden.plantRange * Random.insideUnitSphere);
+                    p.transform.localPosition = Project (localPos + garden.plantRange * Random.insideUnitSphere);
                 }
             }
             if (Input.GetMouseButton (1)) {
@@ -60,8 +60,20 @@ namespace GardenSystem {
 
         Vector3 MouseLocalPos() {
             var uvPos = garden.targetCamera.ScreenToViewportPoint (Input.mousePosition);
-            return garden.Locate (uvPos);
-        }
+            return Locate (uvPos);
+		}
+		Vector3 Locate(Vector2 uvPos) {
+			var ray = garden.targetCamera.ViewportPointToRay (uvPos);
+			var plane = new Plane (transform.up, 0f);
+			float t;
+			if (!plane.Raycast (ray, out t))
+				throw new System.Exception ("Impossible!");
+			return Project (transform.InverseTransformPoint (ray.GetPoint (t)));
+		}
+		Vector3 Project(Vector3 localPos) {
+			localPos.y = 0f;
+			return localPos;
+		}
 
         void AddPlant (int typeId, GameObject p) {
             var gaussian = BoxMuller.Gaussian ();
