@@ -22,18 +22,18 @@ namespace GardenSystem {
         }
     	void Update () {
             if (Input.GetMouseButton (0)) {
-                var localPos = MouseLocalPos ();
+                var localPos = LocalPlantPos ();
                 var typeId = garden.Sample (localPos);
                 if (typeId >= 0) {
                     var p = Instantiate (planttypes [typeId]);
                     AddPlant (typeId, p);
-                    p.transform.localPosition = Project (localPos + garden.plantRange * Random.insideUnitSphere);
+					p.transform.localPosition = localPos;
                 }
             }
             if (Input.GetMouseButton (1)) {
                 Garden.PlantData plant = null;
                 float sqrDist = float.MaxValue;
-                var localPos = MouseLocalPos ();
+                var localPos = LocalPlantPos ();
                 foreach (var p in garden.Neighbors(localPos, searchRadius)) {
                     var d = p.transform.localPosition - localPos;
                     if (d.sqrMagnitude < sqrDist) {
@@ -42,9 +42,8 @@ namespace GardenSystem {
                     }
                 }
 
-                if (plant != null) {
+                if (plant != null)
                     RemovePlant (plant);
-                }
             }
 
             Wave ();
@@ -58,21 +57,15 @@ namespace GardenSystem {
             }
         }
 
-        Vector3 MouseLocalPos() {
-            var uvPos = garden.targetCamera.ScreenToViewportPoint (Input.mousePosition);
-            return Locate (uvPos);
-		}
-		Vector3 Locate(Vector2 uvPos) {
-			var ray = garden.targetCamera.ViewportPointToRay (uvPos);
-			var plane = new Plane (transform.up, 0f);
-			float t;
-			if (!plane.Raycast (ray, out t))
-				throw new System.Exception ("Impossible!");
-			return Project (transform.InverseTransformPoint (ray.GetPoint (t)));
-		}
-		Vector3 Project(Vector3 localPos) {
-			localPos.y = 0f;
-			return localPos;
+        Vector3 LocalPlantPos() {
+			var garden2camInWorld = garden.transform.position - garden.targetCamera.transform.position;
+			var mousePos = Input.mousePosition;
+			mousePos.z = Vector3.Dot (garden2camInWorld, garden.targetCamera.transform.forward);
+			var worldPlantPos = garden.targetCamera.ScreenToWorldPoint (mousePos);
+			worldPlantPos += garden.plantRange * Random.insideUnitSphere;
+			var localPlantPos = garden.transform.InverseTransformPoint (worldPlantPos);
+			localPlantPos.y = 0f;
+			return localPlantPos;
 		}
 
         void AddPlant (int typeId, GameObject p) {

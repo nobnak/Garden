@@ -21,7 +21,7 @@ namespace GardenSystem {
             InitTypeCount (_typeCount = 0);
         }
         void OnDisable() {
-            _plants.Dispose ();
+			_plants.Dispose ();
         }
 
         public void InitTypeCount(int typeCount) {
