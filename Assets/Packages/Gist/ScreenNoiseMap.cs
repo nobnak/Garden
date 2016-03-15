@@ -64,23 +64,48 @@ namespace Gist {
         }
 
         public Vector3 GetZNormalFromUv(Vector2 uv) {
-            var c = _noiseTex.GetPixelBilinear (uv.x, uv.y);
-            var n = new Vector3 (2f * c.r - 1f, 2f * c.g - 1f, 2f * c.b - 1f);
+            var n = GetNormal (uv);
             return n.normalized;
         }
         public Vector3 GetYNormalFromUv(Vector2 uv) {
-            var c = _noiseTex.GetPixelBilinear (uv.x, uv.y);
-            var n = new Vector3 (2f * c.r - 1f, 2f * c.b - 1f, 2f * c.g - 1f);
+            var n = GetNormal (uv);
+            n = new Vector3 (n.x, n.z, n.y);
             return n.normalized;
         }
         public Vector3 GetYNormalFromWorldPos(Vector3 worldPos) {
             var uv = targetCam.WorldToViewportPoint(worldPos);
             return GetYNormalFromUv (uv);
         }
-        public float GetHeight(float u, float v) {
-            var c = _noiseTex.GetPixelBilinear (u, v);
-            return c.a;
+
+        public Vector3 GetNormal(Vector2 uv) {
+            var x = uv.x * _width + 0.5f;
+            var y = uv.y * _height + 0.5f;
+            var ix = (int)x;
+            var iy = (int)y;
+            var dx = x - ix;
+            var dy = y - iy;
+
+            ix = ix < 0 ? 0 : (ix >= _width ? _width - 1 : ix);
+            iy = iy < 0 ? 0 : (iy >= _height ? _height - 1 : iy);
+            var jx = ix + 1;
+            var jy = iy + 1;
+            if (jx >= _width)
+                jx = _width - 1;
+            if (jy >= _height)
+                jy = _height - 1;
+            
+            return (1f - dx) * ((1f - dy) * GetNormal (ix, iy) + dy * GetNormal (ix, jy))
+                + dx * ((1f - dy) * GetNormal (jx, iy) + dy * GetNormal (jx, jy));
         }
+
+        public float GetHeight(int x, int y) { return _heightValues[x + y * (_width + 1)]; }
+        public void SetHeight(int x, int y, float value) { _heightValues[x + y * (_width + 1)] = value; }
+
+        public Vector3 GetNormal(int x, int y) { return _normalValues[x + y * _width]; }
+        public void SetNormal(int x, int y, Vector3 value) { _normalValues[x + y * _width] = value; }
+
+        public Color GetNoisePixel(int x, int y) { return _noiseColors[x + y * _width]; }
+        public void SetNoisePixel(int x, int y, Color value) { _noiseColors[x + y * _width] = value; }
 
         void UpdateNoiseMap() {
             UpdateHeightMap ();
@@ -95,34 +120,27 @@ namespace Gist {
             var px = (float)noiseFreq / _height;
             var t = Time.timeSinceLevelLoad * timeScale + _seeds.z;
             Parallel.For (0, _height + 1, y =>  {
-                for (var x = 0; x <= _width; x++) {
-                    var i = x + y * (_width + 1);
-                    _heightValues [i] = (float)SimplexNoise.Noise (px * (x - 0.5f + _seeds.x), px * (y - 0.5f + _seeds.y), t);
-                }
+                for (var x = 0; x <= _width; x++)
+                    SetHeight(x, y, (float)SimplexNoise.Noise (px * (x - 0.5f + _seeds.x), px * (y - 0.5f + _seeds.y), t));
             });
         }
         void UpdateNormalMap () {
             var idx = (float)_height / fieldSize;
             Parallel.For (0, _height, y =>  {
                 for (var x = 0; x < _width; x++) {
-                    var i = x + y * _width;
-                    var j = x + y * (_width + 1);
-                    var h = _heightValues[j];
-                    var dhdx = (_heightValues [j + 1] - h) * idx;
-                    var dhdy = (_heightValues [j + (_width + 1)] - h) * idx;
-                    var n = new Vector3 (-dhdx, -dhdy, 1f).normalized;
-                    _normalValues[i] = n;
+                    var h = GetHeight(x, y);
+                    var dhdx = (GetHeight(x + 1, y) - h) * idx;
+                    var dhdy = (GetHeight(x, y + 1) - h) * idx;
+                    SetNormal(x, y, new Vector3 (-dhdx, -dhdy, 1f).normalized);
                 }
             });
         }
         void UpdateTexture() {
             Parallel.For (0, _height, y =>  {
                 for (var x = 0; x < _width; x++) {
-                    var i = x + y * _width;
-                    var j = x + y * (_width + 1);
-                    var h = _heightValues[j];
-                    var n = _normalValues[i];
-                    _noiseColors[i] = new Color(0.5f * (n.x + 1f), 0.5f * (n.y + 1f), 0.5f * (n.z + 1f), h);
+                    var h = GetHeight(x, y);
+                    var n = GetNormal(x, y);
+                    SetNoisePixel(x, y, new Color(0.5f * (n.x + 1f), 0.5f * (n.y + 1f), 0.5f * (n.z + 1f), h));
                 }
             });
         }
