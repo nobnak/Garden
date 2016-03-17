@@ -18,6 +18,8 @@ namespace Gist {
         public float noiseFreq = 1f;
         public float timeScale = 1f;
 
+        public System.Func<float, float, float, float> HeightFunc;
+
         Texture2D _noiseTex;
         float[] _heightValues;
         Vector3[] _normalValues;
@@ -119,9 +121,10 @@ namespace Gist {
         void UpdateHeightMap () {
             var px = (float)noiseFreq / _height;
             var t = Time.timeSinceLevelLoad * timeScale + _seeds.z;
+            var H = (HeightFunc == null ? DefaultHeightFunc : HeightFunc);                
             Parallel.For (0, _height + 1, y =>  {
                 for (var x = 0; x <= _width; x++)
-                    SetHeight(x, y, (float)SimplexNoise.Noise (px * (x - 0.5f + _seeds.x), px * (y - 0.5f + _seeds.y), t));
+                    SetHeight(x, y, H(px * (x - 0.5f + _seeds.x), px * (y - 0.5f + _seeds.y), t));
             });
         }
         void UpdateNormalMap () {
@@ -145,6 +148,9 @@ namespace Gist {
             });
         }
 
+        float DefaultHeightFunc(float x, float y, float z) {
+            return (float)SimplexNoise.Noise (x, y, z);
+        }
         void ReleaseTex () {
             DestroyImmediate(_noiseTex);
         }

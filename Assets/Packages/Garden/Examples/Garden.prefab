@@ -9,7 +9,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 444760}
   - 114: {fileID: 11468636}
-  - 114: {fileID: 11414210}
+  - 114: {fileID: 11406472}
+  - 114: {fileID: 11455004}
   m_Layer: 0
   m_Name: Garden
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &11414210
+--- !u!114 &11406472
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -37,10 +38,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 179148}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47d7a53d51fcea44181a28fca86ad26a, type: 3}
+  m_Script: {fileID: 11500000, guid: 11e3b8cb7b41b1e49862a987c47de5b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  garden: {fileID: 11468636}
+  noiseMap: {fileID: 11455004}
+  tiltPower: 1
+--- !u!114 &11455004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fc708c528a2758478b2389a9fc2c76b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugMode: 0
+  debugMat: {fileID: 2100000, guid: 4608b552e0e59e94ab5a6892e439be1b, type: 2}
+  OnCreateTexture:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: Gist.ScreenNoiseMap+TextureEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  targetCam: {fileID: 0}
+  lod: 4
+  fieldSize: 10
+  noiseFreq: 2
+  timeScale: 0.1
 --- !u!114 &11468636
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -53,15 +78,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCamera: {fileID: 0}
-  plantfabs:
-  - {fileID: 189242, guid: 1112f95025acaa44fb96aefc30de4c82, type: 2}
-  - {fileID: 189242, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
-  - {fileID: 189242, guid: a9e699495234d9e49a8d30a77d7e2752, type: 2}
-  - {fileID: 189242, guid: 63b1658c41339404588dd08eddaab470, type: 2}
-  - {fileID: 189242, guid: ff5653ef934d9154f91e4883332ff450, type: 2}
   plantRange: 1
-  interference: 1.1
-  rotationSpeed: {x: 30, y: 1, z: 0.05}
+  interference: 1.15
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

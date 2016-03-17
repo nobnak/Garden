@@ -9,15 +9,13 @@ namespace GardenSystem {
         public const float ROUND_IN_DEG = 360f;
 
         public Garden garden;
+        public Wind wind;
         public ScreenNoiseMap noiseMap;
         public GameObject[] planttypes;
         public float searchRadius = 1f;
         public float tiltPower = 1f;
 
-        List<PlantData> _plants;
-
         void Start() {
-            _plants = new List<PlantData> ();
             garden.InitTypeCount (planttypes.Length);
         }
     	void Update () {
@@ -45,16 +43,6 @@ namespace GardenSystem {
                 if (plant != null)
                     RemovePlant (plant);
             }
-
-            Wave ();
-        }
-
-        void Wave () {
-            foreach (var p in _plants) {
-                var tr = p.go.transform;
-                var n = noiseMap.GetYNormalFromWorldPos (tr.position);
-                tr.localRotation = Quaternion.FromToRotation (Vector3.up, n) * p.tilt;
-            }
         }
 
         Vector3 LocalPlantPos() {
@@ -69,22 +57,13 @@ namespace GardenSystem {
 		}
 
         void AddPlant (int typeId, GameObject p) {
-            var gaussian = BoxMuller.Gaussian ();
-            var tilt = Quaternion.Euler (tiltPower * gaussian.x, Random.Range(0f, ROUND_IN_DEG), tiltPower * gaussian.y);            
-
-            _plants.Add (new PlantData(){ go = p, tilt = tilt} );
+            wind.Add (p.transform);
             garden.Add (typeId, p.transform);
         }
         void RemovePlant (Garden.PlantData plant) {
             garden.Remove (plant.transform);
-            var go = plant.transform.gameObject;
-            _plants.RemoveAll ((p) => p.go == go);
-            Destroy (go);
-        }
-
-        public class PlantData {
-            public GameObject go;
-            public Quaternion tilt;
+            wind.Remove (plant.transform);
+            Destroy (plant.transform.gameObject);
         }
     }
 }
