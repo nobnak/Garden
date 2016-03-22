@@ -65,5 +65,19 @@ namespace GardenSystem {
             wind.Remove (plant.transform);
             Destroy (plant.transform.gameObject);
         }
+
+        public class PlantWelfare {
+            public readonly Renderer Renderer;
+            public readonly MaterialPropertyBlock Block;
+
+            public PlantWelfare(GameObject parent) {
+                this.Renderer = parent.GetComponentInChildren<Renderer>();
+
+                Renderer.GetPropertyBlock(this.Block = new MaterialPropertyBlock());
+            }
+            public void Apply() {
+                Renderer.SetPropertyBlock (Block);
+            }
+        }
     }
 }
