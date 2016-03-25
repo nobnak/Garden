@@ -8,9 +8,10 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 444760}
+  - 114: {fileID: 11455004}
   - 114: {fileID: 11468636}
   - 114: {fileID: 11406472}
-  - 114: {fileID: 11455004}
+  - 114: {fileID: 11427098}
   m_Layer: 0
   m_Name: Garden
   m_TagString: Untagged
@@ -43,6 +44,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noiseMap: {fileID: 11455004}
   tiltPower: 1
+--- !u!114 &11427098
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8a79b90c18def94586bbe65432115c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  propTime: _AnimTex_T
+  lifetime: 60
 --- !u!114 &11455004
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -10,7 +10,7 @@ namespace GardenSystem {
 
         public Garden garden;
         public Wind wind;
-        public ScreenNoiseMap noiseMap;
+        public TimeAnimator animator;
         public GameObject[] planttypes;
         public float searchRadius = 1f;
         public float tiltPower = 1f;
@@ -41,8 +41,11 @@ namespace GardenSystem {
                 }
 
                 if (plant != null)
-                    RemovePlant (plant);
+                    RemovePlant (plant.transform);
             }
+
+            foreach (var p in animator.DeadPlants())
+                RemovePlant (p);
         }
 
         Vector3 LocalPlantPos() {
@@ -58,12 +61,14 @@ namespace GardenSystem {
 
         void AddPlant (int typeId, GameObject p) {
             wind.Add (p.transform);
+            animator.Add (p.transform);
             garden.Add (typeId, p.transform);
         }
-        void RemovePlant (Garden.PlantData plant) {
-            garden.Remove (plant.transform);
-            wind.Remove (plant.transform);
-            Destroy (plant.transform.gameObject);
+        void RemovePlant (Transform plant) {
+            garden.Remove (plant);
+            animator.Remove (plant);
+            wind.Remove (plant);
+            Destroy (plant.gameObject);
         }
 
         public class PlantWelfare {
