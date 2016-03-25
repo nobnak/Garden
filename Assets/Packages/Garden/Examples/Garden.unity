@@ -197,7 +197,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   garden: {fileID: 1618437049}
-  wind: {fileID: 1618437053}
   animator: {fileID: 243401378}
   planttypes:
   - {fileID: 2111876994}
@@ -330,6 +329,14 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: epochs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11468636, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: modifiers.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 444760, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -372,7 +379,47 @@ Prefab:
       objectReference: {fileID: 1224466125}
     - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
       propertyPath: lifetime
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 11468636, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: modifiers.Array.data[0]
+      value: 
+      objectReference: {fileID: 1618437053}
+    - target: {fileID: 11468636, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: modifiers.Array.data[1]
+      value: 
+      objectReference: {fileID: 243401378}
+    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11406472, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: epochs.Array.data[0].limit
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: epochs.Array.data[2].speed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: epochs.Array.data[1].limit
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: epochs.Array.data[2].limit
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: epochs.Array.data[0].speed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: epochs.Array.data[1].speed
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}

@@ -27,6 +27,10 @@ Material:
         first:
           name: _AnimTex_T
         second: 0
+      data:
+        first:
+          name: _Lifetime
+        second: 60
     m_Colors:
       data:
         first:

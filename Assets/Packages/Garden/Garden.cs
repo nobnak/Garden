@@ -20,7 +20,7 @@ namespace GardenSystem {
     	void OnEnable() {
             _plants = new HashGrid<PlantData> ((p) => p.transform.localPosition);
             InitTypeCount (_typeCount = 0);
-			foreach (var mod in EnabledModifiers())
+			foreach (var mod in modifiers)
 				mod.Set (this);
         }
         void OnDisable() {

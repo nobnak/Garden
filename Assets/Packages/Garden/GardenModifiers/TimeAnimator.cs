@@ -7,13 +7,20 @@ namespace GardenSystem {
 	public class TimeAnimator : Garden.ModifierAbstract {
         public string propTime = "_AnimTex_T";
         public float lifetime = 60f;
+		public Epoch[] epochs;
 
 		List<Transform> _tmpTransforms = new List<Transform>();
 
     	void Update () {
             var dt = Time.deltaTime;
-			foreach (var p in garden.Plants())
-                p.AddTime (propTime, dt, lifetime);
+			foreach (var p in garden.Plants()) {
+				foreach (var e in epochs) {
+					if (e.Match (p)) {
+						p.AddTime (propTime, e.Delta(dt), lifetime);
+						break;
+					}
+				}
+			}
     	}
 
         public override void Add(Transform plant) {}
@@ -25,17 +32,33 @@ namespace GardenSystem {
 					_tmpTransforms.Add (p.transform);
 			return _tmpTransforms;
         }
+
+		[System.Serializable]
+		public class Epoch {
+			public float limit;
+			public int stencil;
+			public float speed;
+
+			public bool Match(PlantData p) {
+				return p.time < limit && p.stencil == stencil;
+			}
+			public float Delta(float dt) {
+				return dt * speed;
+			}
+		}
     }
 
 	public partial class PlantData {
 		public Renderer renderer;
 		public MaterialPropertyBlock block;
 		public float time;
+		public int stencil;
 
 		partial void Init() {
 			this.renderer = transform.GetComponentInChildren<Renderer>();
 			this.renderer.GetPropertyBlock(this.block = new MaterialPropertyBlock());
 			this.time = 0f;
+			this.stencil = 0;
 		}
 
 		public void SetTime(string prop, float time) {
@@ -44,11 +67,10 @@ namespace GardenSystem {
 			renderer.SetPropertyBlock (block);
 		}
 		public void AddTime(string prop, float dt, float lifetime) {
-			time += dt;
+			var time = this.time + dt;
 			if (time >= lifetime)
 				time = lifetime;
-			block.SetFloat (prop, time);
-			renderer.SetPropertyBlock (block);
+			SetTime(prop, time);
 		}
 	}
 }
