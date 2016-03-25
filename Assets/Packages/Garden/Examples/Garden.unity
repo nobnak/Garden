@@ -329,14 +329,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: epochs.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11468636, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: modifiers.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 444760, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -369,58 +361,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 11468636, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: targetCamera
-      value: 
-      objectReference: {fileID: 1224466125}
     - target: {fileID: 11455004, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
       propertyPath: targetCam
       value: 
       objectReference: {fileID: 1224466125}
-    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: lifetime
-      value: 60
-      objectReference: {fileID: 0}
     - target: {fileID: 11468636, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: modifiers.Array.data[0]
+      propertyPath: targetCamera
       value: 
-      objectReference: {fileID: 1618437053}
-    - target: {fileID: 11468636, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: modifiers.Array.data[1]
-      value: 
-      objectReference: {fileID: 243401378}
-    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11406472, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: epochs.Array.data[0].limit
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: epochs.Array.data[2].speed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: epochs.Array.data[1].limit
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: epochs.Array.data[2].limit
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: epochs.Array.data[0].speed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 11427098, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: epochs.Array.data[1].speed
-      value: 0.1
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1224466125}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
   m_IsPrefabParent: 0
@@ -612,12 +560,6 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1104145047}
   m_Script: {fileID: 11500000, guid: a36e05bfd8d01ea478454bd48cae7b16, type: 3}
---- !u!114 &1618437053 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 11406472, guid: deae66bd59bc35249918fd8aef317cfe,
-    type: 2}
-  m_PrefabInternal: {fileID: 1104145047}
-  m_Script: {fileID: 11500000, guid: 11e3b8cb7b41b1e49862a987c47de5b1, type: 3}
 --- !u!1 &1694637576
 GameObject:
   m_ObjectHideFlags: 0

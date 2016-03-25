@@ -105,8 +105,8 @@ namespace GardenSystem {
 				this.garden = garden;
 			}
 
-			public abstract void Add(Transform transform);
-			public abstract void Remove(Transform transform);
+			public virtual void Add(Transform transform) {}
+			public virtual void Remove(Transform transform) {}
 
         }
 	}

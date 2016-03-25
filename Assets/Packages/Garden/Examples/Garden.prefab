@@ -42,6 +42,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11e3b8cb7b41b1e49862a987c47de5b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  garden: {fileID: 0}
   noiseMap: {fileID: 11455004}
   tiltPower: 1
 --- !u!114 &11427098
@@ -55,8 +56,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8a79b90c18def94586bbe65432115c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  garden: {fileID: 0}
   propTime: _AnimTex_T
   lifetime: 60
+  epochs:
+  - fromTime: 0
+    toTime: 10
+    stencil: 0
+    speed: 10
+  - fromTime: 10
+    toTime: 20
+    stencil: 0
+    speed: 1
+  - fromTime: 10
+    toTime: 20
+    stencil: 1
+    speed: 10
+  - fromTime: 20
+    toTime: 60
+    stencil: 0
+    speed: 0
+  - fromTime: 20
+    toTime: 60
+    stencil: 1
+    speed: 10
 --- !u!114 &11455004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -94,6 +117,9 @@ MonoBehaviour:
   targetCamera: {fileID: 0}
   plantRange: 1
   interference: 1.15
+  modifiers:
+  - {fileID: 11406472}
+  - {fileID: 11427098}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

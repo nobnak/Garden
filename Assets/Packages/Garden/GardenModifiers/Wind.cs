@@ -28,7 +28,6 @@ namespace GardenSystem {
 			if (p != null)
 				p.tilt = InitialTilt();
         }
-		public override void Remove(Transform plant) {}
 
 		Quaternion InitialTilt () {
 			var gaussian = BoxMuller.Gaussian ();

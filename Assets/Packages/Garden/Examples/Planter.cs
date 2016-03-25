@@ -28,19 +28,9 @@ namespace GardenSystem {
                 }
             }
             if (Input.GetMouseButton (1)) {
-                PlantData plant = null;
-                float sqrDist = float.MaxValue;
                 var localPos = LocalPlantPos ();
-                foreach (var p in garden.Neighbors(localPos, searchRadius)) {
-                    var d = p.transform.localPosition - localPos;
-                    if (d.sqrMagnitude < sqrDist) {
-                        sqrDist = d.sqrMagnitude;
-                        plant = p;
-                    }
-                }
-
-                if (plant != null)
-                    RemovePlant (plant.transform);
+                foreach (var p in garden.Neighbors(localPos, searchRadius))
+					animator.SetStencil (p, TimeAnimator.StencilEnum.Die);
             }
 
             foreach (var p in animator.DeadPlants())

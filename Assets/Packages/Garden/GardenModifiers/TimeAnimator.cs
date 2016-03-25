@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace GardenSystem {
         
 	public class TimeAnimator : Garden.ModifierAbstract {
+		public enum StencilEnum { Birth = 0, Die }
         public string propTime = "_AnimTex_T";
         public float lifetime = 60f;
 		public Epoch[] epochs;
@@ -23,8 +24,6 @@ namespace GardenSystem {
 			}
     	}
 
-        public override void Add(Transform plant) {}
-		public override void Remove(Transform plant) {}
         public IList<Transform> DeadPlants() {
             _tmpTransforms.Clear ();
 			foreach (var p in garden.Plants())
@@ -32,15 +31,28 @@ namespace GardenSystem {
 					_tmpTransforms.Add (p.transform);
 			return _tmpTransforms;
         }
+		public void SetStencil(PlantData p, StencilEnum stencil) {
+			var istencil = (int)stencil;
+			foreach (var e in epochs) {
+				if (e.Match (p, istencil)) {
+					p.stencil = istencil;
+					return;
+				}
+			}
+		}
 
 		[System.Serializable]
 		public class Epoch {
-			public float limit;
+			public float fromTime;
+			public float toTime;
 			public int stencil;
 			public float speed;
 
 			public bool Match(PlantData p) {
-				return p.time < limit && p.stencil == stencil;
+				return Match (p, p.stencil);
+			}
+			public bool Match(PlantData p, int epochStencil) {
+				return fromTime <= p.time && p.time < toTime && stencil == epochStencil;
 			}
 			public float Delta(float dt) {
 				return dt * speed;
