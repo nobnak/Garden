@@ -20,40 +20,52 @@ namespace GardenSystem {
     	void OnEnable() {
             _plants = new HashGrid<PlantData> ((p) => p.transform.localPosition);
             InitTypeCount (_typeCount = 0);
+			foreach (var mod in EnabledModifiers())
+				mod.Set (this);
         }
         void OnDisable() {
 			_plants.Dispose ();
         }
 
-        public void InitTypeCount(int typeCount) {
-            if (_tmpCountPerType == null || _tmpCountPerType.Length < typeCount) {
-                _typeCount = Mathf.Max (_typeCount, typeCount);
-                System.Array.Resize (ref _tmpCountPerType, _typeCount);
-            }
-        }
-        public int Sample(Vector3 localPos) {
-            var totalCount = CountNeighbors(_tmpCountPerType, localPos, plantRange);
-            var w = WeightFunc(_tmpCountPerType, totalCount);
-            int typeId;
-            if (RouletteWheelSelection.Sample (out typeId, int.MaxValue, 1f, w, _typeCount))
-                return typeId;
-            return -1;
-        }
         public void Add(int typeId, Transform plant) {
             plant.transform.SetParent (transform, false);
-            _plants.Add (new PlantData (){ typeId = typeId, transform = plant });
-            foreach (var mod in modifiers)
-                mod.Add (plant.GetInstanceID ());
+			_plants.Add (new PlantData (typeId, plant));
+			foreach (var mod in EnabledModifiers())
+                mod.Add (plant);
         }
         public void Remove(Transform plant) {
-            var p = _plants.Find((i) => i.transform == plant);
+			var p = FindPlant (plant);
             if (p != null) {
-                _plants.Remove (p);
+				foreach (var mod in EnabledModifiers())
+					mod.Remove (p.transform);
+				_plants.Remove (p);
             }
         }
+		public IEnumerable<PlantData> Plants() {
+			foreach (var p in _plants.Points)
+				yield return p;
+		}
+		public PlantData FindPlant(Transform plant) {
+			return _plants.Find ((i) => i.transform == plant);
+		}
         public IEnumerable<PlantData> Neighbors(Vector3 center, float distance) {
             return _plants.Neighbors (center, distance);
-        }
+		}
+
+		public void InitTypeCount(int typeCount) {
+			if (_tmpCountPerType == null || _tmpCountPerType.Length < typeCount) {
+				_typeCount = Mathf.Max (_typeCount, typeCount);
+				System.Array.Resize (ref _tmpCountPerType, _typeCount);
+			}
+		}
+		public int Sample(Vector3 localPos) {
+			var totalCount = CountNeighbors(_tmpCountPerType, localPos, plantRange);
+			var w = WeightFunc(_tmpCountPerType, totalCount);
+			int typeId;
+			if (RouletteWheelSelection.Sample (out typeId, int.MaxValue, 1f, w, _typeCount))
+				return typeId;
+			return -1;
+		}
 
         int CountNeighbors(int[] typeCounters, Vector3 center, float radius) {
             System.Array.Clear (typeCounters, 0, typeCounters.Length);
@@ -79,15 +91,37 @@ namespace GardenSystem {
             return Mathf.SmoothStep (1f, 0f, t);
         }
 
-        public partial class PlantData {
-            public int typeId;
-            public Transform transform;
-        }
+		IEnumerable<ModifierAbstract> EnabledModifiers() {
+			foreach (var mod in modifiers)
+				if (mod.enabled)
+					yield return mod;
+		}
+
 
         public abstract class ModifierAbstract : MonoBehaviour {
-            public abstract void Init (Garden garden);
-            public abstract void Add(int instanceId);
-            public abstract void Remove(int instanceId);
+			public Garden garden;
+
+			public virtual void Set(Garden garden) {
+				this.garden = garden;
+			}
+
+			public abstract void Add(Transform transform);
+			public abstract void Remove(Transform transform);
+
         }
-    }
+	}
+
+	public partial class PlantData {
+		public int typeId;
+		public Transform transform;
+
+		public PlantData(int typeId, Transform transform) {
+			this.typeId = typeId;
+			this.transform = transform;
+
+			Init();
+		}
+
+		partial void Init();
+	}
 }

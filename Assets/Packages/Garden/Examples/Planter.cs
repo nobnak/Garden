@@ -9,7 +9,6 @@ namespace GardenSystem {
         public const float ROUND_IN_DEG = 360f;
 
         public Garden garden;
-        public Wind wind;
         public TimeAnimator animator;
         public GameObject[] planttypes;
         public float searchRadius = 1f;
@@ -29,7 +28,7 @@ namespace GardenSystem {
                 }
             }
             if (Input.GetMouseButton (1)) {
-                Garden.PlantData plant = null;
+                PlantData plant = null;
                 float sqrDist = float.MaxValue;
                 var localPos = LocalPlantPos ();
                 foreach (var p in garden.Neighbors(localPos, searchRadius)) {
@@ -60,14 +59,10 @@ namespace GardenSystem {
 		}
 
         void AddPlant (int typeId, GameObject p) {
-            wind.Add (p.transform);
-            animator.Add (p.transform);
             garden.Add (typeId, p.transform);
         }
         void RemovePlant (Transform plant) {
             garden.Remove (plant);
-            animator.Remove (plant);
-            wind.Remove (plant);
             Destroy (plant.gameObject);
         }
 

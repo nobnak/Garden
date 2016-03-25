@@ -4,64 +4,51 @@ using System.Collections.Generic;
 
 namespace GardenSystem {
         
-    public class TimeAnimator : MonoBehaviour {
+	public class TimeAnimator : Garden.ModifierAbstract {
         public string propTime = "_AnimTex_T";
         public float lifetime = 60f;
 
-        List<PlantData> _plants;
-        List<Transform> _tmp;
+		List<Transform> _tmpTransforms = new List<Transform>();
 
-        void Awake() {
-            _plants = new List<PlantData>();
-            _tmp = new List<Transform> ();
-        }
-        void OnDisable() {
-            _plants.Clear ();
-        }
     	void Update () {
             var dt = Time.deltaTime;
-            foreach (var p in _plants)
+			foreach (var p in garden.Plants())
                 p.AddTime (propTime, dt, lifetime);
     	}
 
-        public void Add(Transform plant) {
-            _plants.Add (new PlantData (plant));
-        }
-        public void Remove(Transform plant) {
-            _plants.RemoveAll ((p) => p.transform == plant);
-        }
+        public override void Add(Transform plant) {}
+		public override void Remove(Transform plant) {}
         public IList<Transform> DeadPlants() {
-            _tmp.Clear ();
-            foreach (var p in _plants)
+            _tmpTransforms.Clear ();
+			foreach (var p in garden.Plants())
                 if (p.time >= lifetime)
-                    _tmp.Add (p.transform);
-            return _tmp;
-        }
-
-        public class PlantData {
-            public Transform transform;
-            public Renderer renderer;
-            public MaterialPropertyBlock block;
-            public float time;
-
-            public PlantData(Transform transform) {
-                this.transform = transform;
-                this.renderer = transform.GetComponentInChildren<Renderer>();
-                this.renderer.GetPropertyBlock(this.block = new MaterialPropertyBlock());
-                this.time = 0f;
-            }
-            public void SetTime(string prop, float time) {
-                this.time = time;
-                block.SetFloat (prop, time);
-                renderer.SetPropertyBlock (block);
-            }
-            public void AddTime(string prop, float dt, float lifetime) {
-                time += dt;
-                if (time >= lifetime)
-                    time = lifetime;
-                block.SetFloat (prop, time);
-                renderer.SetPropertyBlock (block);
-            }
+					_tmpTransforms.Add (p.transform);
+			return _tmpTransforms;
         }
     }
+
+	public partial class PlantData {
+		public Renderer renderer;
+		public MaterialPropertyBlock block;
+		public float time;
+
+		partial void Init() {
+			this.renderer = transform.GetComponentInChildren<Renderer>();
+			this.renderer.GetPropertyBlock(this.block = new MaterialPropertyBlock());
+			this.time = 0f;
+		}
+
+		public void SetTime(string prop, float time) {
+			this.time = time;
+			block.SetFloat (prop, time);
+			renderer.SetPropertyBlock (block);
+		}
+		public void AddTime(string prop, float dt, float lifetime) {
+			time += dt;
+			if (time >= lifetime)
+				time = lifetime;
+			block.SetFloat (prop, time);
+			renderer.SetPropertyBlock (block);
+		}
+	}
 }
