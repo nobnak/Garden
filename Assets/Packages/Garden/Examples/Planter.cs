@@ -6,6 +6,8 @@ using Gist;
 namespace GardenSystem {
 
     public class Planter : MonoBehaviour {
+		public const int TIME_STENCIL_BIRTH = 0;
+		public const int TIME_STENCIL_DIE = 1;
         public const float ROUND_IN_DEG = 360f;
 
         public Garden garden;
@@ -30,7 +32,7 @@ namespace GardenSystem {
             if (Input.GetMouseButton (1)) {
                 var localPos = LocalPlantPos ();
                 foreach (var p in garden.Neighbors(localPos, searchRadius))
-					animator.SetStencil (p, TimeAnimator.StencilEnum.Die);
+					animator.SetStencil (p, TIME_STENCIL_DIE);
             }
 
             foreach (var p in animator.DeadPlants())
