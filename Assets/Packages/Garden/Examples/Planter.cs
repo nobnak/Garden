@@ -5,7 +5,7 @@ using Gist;
 
 namespace GardenSystem {
 
-    public class Planter : MonoBehaviour {
+	public class Planter : MonoBehaviour {
 		public const int TIME_STENCIL_BIRTH = 0;
 		public const int TIME_STENCIL_DIE = 1;
         public const float ROUND_IN_DEG = 360f;
@@ -15,6 +15,10 @@ namespace GardenSystem {
         public GameObject[] planttypes;
         public float searchRadius = 1f;
         public float tiltPower = 1f;
+
+		public int segments = 10;
+		public float radius = 0.5f;
+		public float dist = 10f;
 
         void Start() {
             garden.InitTypeCount (planttypes.Length);
@@ -38,6 +42,23 @@ namespace GardenSystem {
             foreach (var p in animator.DeadPlants())
                 RemovePlant (p);
         }
+		void OnRenderObject() {
+			GL.PushMatrix ();
+
+			var dr = (2f * Mathf.PI) / segments;
+			GL.LoadIdentity ();
+			GL.Begin (GL.LINES);
+			var v = new Vector3 (radius, 0f, -dist);
+			for (var i = 0; i <= segments; i++) {
+				//GL.Color(Color.red);
+				GL.Vertex (v);
+				v = new Vector3(radius * Mathf.Cos (i * dr), radius * Mathf.Sin (i * dr), -dist);
+				GL.Vertex (v);
+			}
+			GL.End ();
+
+			GL.PopMatrix ();
+		}
 
         Vector3 LocalPlantPos() {
 			var garden2camInWorld = garden.transform.position - garden.targetCamera.transform.position;
