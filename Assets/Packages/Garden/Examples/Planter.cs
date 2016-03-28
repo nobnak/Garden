@@ -17,6 +17,7 @@ namespace GardenSystem {
         public float searchRadius = 1f;
         public float tiltPower = 1f;
 
+        public float debugHoldTime = 1f;
         public Color debugColorAdd = Color.green;
         public Color debugColorRemove = Color.red;
 
@@ -62,10 +63,16 @@ namespace GardenSystem {
             _figure.ZTestMode = GLFigure.ZTestEnum.ALWAYS;
             _figure.ZWriteMode = false;
 
+            var timeLimit = Time.timeSinceLevelLoad - debugHoldTime;
             var rot = Camera.main.transform.rotation;
-            foreach (var m in _markers)
-                _figure.FillCircle (m.pos, rot, m.size * 5f, m.color);
-            _markers.Clear ();
+            for (var i = 0; i < _markers.Count;) {
+                var m = _markers [i];
+                _figure.FillCircle (m.pos, rot, m.size, m.color);
+                if (m.time < timeLimit)
+                    _markers.RemoveAt (i);
+                else
+                    i++;
+            }
 		}
 
         Vector3 WorldMousePos() {
@@ -107,11 +114,13 @@ namespace GardenSystem {
             public Vector3 pos;
             public Vector2 size;
             public Color color;
+            public float time;
 
             public DebugMarker(Vector3 pos, float radius, Color color) {
                 this.pos = pos;
                 this.size = radius * Vector2.one;
                 this.color = color;
+                this.time = Time.timeSinceLevelLoad;
             }
         }
     }

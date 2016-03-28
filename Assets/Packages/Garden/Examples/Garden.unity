@@ -205,8 +205,9 @@ MonoBehaviour:
   - {fileID: 797277379}
   - {fileID: 1143583026}
   perturbation: 1
-  searchRadius: 1
+  searchRadius: 2
   tiltPower: 1
+  debugHoldTime: 0.1
   debugColorAdd: {r: 0, g: 1, b: 0, a: 0.478}
   debugColorRemove: {r: 1, g: 0, b: 0, a: 0.478}
 --- !u!4 &725324387
