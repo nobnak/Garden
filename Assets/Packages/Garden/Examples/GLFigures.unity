@@ -259,10 +259,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3133739bef3e4541a9e240f192290e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1470786831}
-  size: {x: 1, y: 1}
-  bodyColor: {r: 0, g: 1, b: 0, a: 1}
-  lineColor: {r: 1, g: 0, b: 0, a: 1}
+  datas:
+  - renderType: 1
+    target: {fileID: 1470786831}
+    size: {x: 1, y: 1}
+    bodyColor: {r: 1, g: 0.6959999, b: 0, a: 1}
+    lineColor: {r: 0.18199992, g: 1, b: 0, a: 1}
+  - renderType: 2
+    target: {fileID: 678239424}
+    size: {x: 1, y: 1}
+    bodyColor: {r: 0, g: 0.53200006, b: 1, a: 1}
+    lineColor: {r: 0.5959997, g: 0, b: 1, a: 1}
 --- !u!4 &580974236
 Transform:
   m_ObjectHideFlags: 0
