@@ -23,6 +23,12 @@ namespace GardenSystem {
 			}
     	}
 
+        public override void Add (Transform transform) {
+            var p = garden.FindPlant (transform);
+            if (p != null)
+                p.SetTime (propTime, 0f);
+        }
+
         public IList<Transform> DeadPlants() {
             _tmpTransforms.Clear ();
 			foreach (var p in garden.Plants())
