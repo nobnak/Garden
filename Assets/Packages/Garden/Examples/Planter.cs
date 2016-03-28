@@ -6,6 +6,9 @@ using Gist;
 namespace GardenSystem {
 
 	public class Planter : MonoBehaviour {
+        public enum DebugModeEnum { None = 0, DrawMarker }
+
+        public const string TAG_MAIN_CAMERA = "MainCamera";
 		public const int TIME_STENCIL_BIRTH = 0;
 		public const int TIME_STENCIL_DIE = 1;
         public const float ROUND_IN_DEG = 360f;
@@ -17,6 +20,7 @@ namespace GardenSystem {
         public float searchRadius = 1f;
         public float tiltPower = 1f;
 
+        public DebugModeEnum debugMode;
         public float debugHoldTime = 1f;
         public Color debugColorAdd = Color.green;
         public Color debugColorRemove = Color.red;
@@ -60,6 +64,17 @@ namespace GardenSystem {
                 RemovePlant (p);
         }
 		void OnRenderObject() {
+            switch (debugMode) {
+            default:
+                _markers.Clear ();
+                return;
+            case DebugModeEnum.DrawMarker:
+                break;
+            }
+
+            if (Camera.current.tag != TAG_MAIN_CAMERA)
+                return;
+            
             _figure.ZTestMode = GLFigure.ZTestEnum.ALWAYS;
             _figure.ZWriteMode = false;
 
