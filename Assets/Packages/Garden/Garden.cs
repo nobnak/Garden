@@ -9,7 +9,6 @@ namespace GardenSystem {
     public class Garden : MonoBehaviour {
         public Camera targetCamera;
 
-        public float plantRange = 1f;
         public float interference = 1.2f;
         public ModifierAbstract[] modifiers;
 
@@ -58,7 +57,7 @@ namespace GardenSystem {
 				System.Array.Resize (ref _tmpCountPerType, _typeCount);
 			}
 		}
-		public int Sample(Vector3 localPos) {
+        public int Sample(Vector3 localPos, float plantRange) {
 			var totalCount = CountNeighbors(_tmpCountPerType, localPos, plantRange);
 			var w = WeightFunc(_tmpCountPerType, totalCount);
 			int typeId;

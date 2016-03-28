@@ -260,14 +260,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   datas:
-  - renderType: 1
+  - renderType: 3
+    ztest: 0
+    figureType: 0
     target: {fileID: 1470786831}
-    size: {x: 1, y: 1}
+    size: {x: 2, y: 2}
     bodyColor: {r: 1, g: 0.6959999, b: 0, a: 1}
     lineColor: {r: 0.18199992, g: 1, b: 0, a: 1}
   - renderType: 2
+    ztest: 1
+    figureType: 1
     target: {fileID: 678239424}
-    size: {x: 1, y: 1}
+    size: {x: 2, y: 2}
     bodyColor: {r: 0, g: 0.53200006, b: 1, a: 1}
     lineColor: {r: 0.5959997, g: 0, b: 1, a: 1}
 --- !u!4 &580974236

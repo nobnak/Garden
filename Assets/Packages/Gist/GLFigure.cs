@@ -14,6 +14,11 @@ namespace Gist {
 		public const float TWO_PI_RAD = 2f * Mathf.PI;
 		public const int SEGMENTS = 36;
 		public const string LINE_SHADER = "Hidden/Internal-Colored";
+
+        public static readonly Vector3[] QUAD = new Vector3[]{
+            new Vector3(-0.5f, -0.5f, 0f), new Vector3(-0.5f,  0.5f, 0f),
+            new Vector3( 0.5f,  0.5f, 0f), new Vector3( 0.5f, -0.5f, 0f)            
+        };
         
         public enum ZTestEnum { NEVER = 1, LESS = 2, EQUAL = 3, LESSEQUAL = 4,
             GREATER = 5, NOTEQUAL = 6, GREATEREQUAL = 7, ALWAYS = 8 };
@@ -47,7 +52,19 @@ namespace Gist {
 			var modelMat = Matrix4x4.TRS (center, look, scale);
 			var cameraMat = Camera.current.worldToCameraMatrix;
 			FillCircle (cameraMat * modelMat, color);
-		}
+        }
+        public void DrawQuad(Vector3 center, Quaternion look, Vector2 size, Color color) {
+            var scale = new Vector3 (size.x, size.y, 1f);
+            var modelMat = Matrix4x4.TRS (center, look, scale);
+            var cameraMat = Camera.current.worldToCameraMatrix;
+            DrawQuad (cameraMat * modelMat, color);
+        }
+        public void FillQuad(Vector3 center, Quaternion look, Vector2 size, Color color) {
+            var scale = new Vector3 (size.x, size.y, 1f);
+            var modelMat = Matrix4x4.TRS (center, look, scale);
+            var cameraMat = Camera.current.worldToCameraMatrix;
+            FillQuad (cameraMat * modelMat, color);
+        }
 
 		public void DrawCircle (Matrix4x4 modelViewMat, Color color) {
 			_lineMat.SetPass (0);
@@ -57,10 +74,10 @@ namespace Gist {
 			var dr = TWO_PI_RAD / SEGMENTS;
 			GL.Begin (GL.LINES);
 			GL.Color (color);
-			var v = new Vector3 (1f, 0f, 0f);
+			var v = new Vector3 (0.5f, 0f, 0f);
 			for (var i = 0; i <= SEGMENTS; i++) {
 				GL.Vertex (v);
-				v.Set(Mathf.Cos (i * dr), Mathf.Sin (i * dr), 0f);
+                v.Set(0.5f * Mathf.Cos (i * dr), 0.5f * Mathf.Sin (i * dr), 0f);
 				GL.Vertex (v);
 			}
 			GL.End ();
@@ -74,16 +91,45 @@ namespace Gist {
 			var dr = TWO_PI_RAD / SEGMENTS;
 			GL.Begin (GL.TRIANGLES);
 			GL.Color (color);
-			var v = new Vector3 (1f, 0f, 0f);
+			var v = new Vector3 (0.5f, 0f, 0f);
 			for (var i = 0; i < SEGMENTS; i++) {
 				GL.Vertex (v);
 				GL.Vertex (Vector3.zero);
-				v.Set (Mathf.Cos ((i + 1) * dr), Mathf.Sin ((i + 1) * dr), 0f);
+                v.Set (0.5f * Mathf.Cos ((i + 1) * dr), 0.5f * Mathf.Sin ((i + 1) * dr), 0f);
 				GL.Vertex (v);
 			}
 			GL.End ();
 			GL.PopMatrix ();
 		}
+
+        public void DrawQuad(Matrix4x4 modelViewMat, Color color) {
+            _lineMat.SetPass (0);
+            GL.PushMatrix ();
+            GL.LoadIdentity ();
+            GL.MultMatrix (modelViewMat);
+            GL.Begin (GL.LINES);
+            GL.Color (color);
+            var v = QUAD [0];
+            for (var i = 0; i < QUAD.Length; i++) {
+                GL.Vertex (v);
+                v = QUAD [(i + 1) % QUAD.Length];
+                GL.Vertex (v);
+            }
+            GL.End ();
+            GL.PopMatrix ();
+        }
+        public void FillQuad(Matrix4x4 modelViewMat, Color color) {
+            _lineMat.SetPass (0);
+            GL.PushMatrix ();
+            GL.LoadIdentity ();
+            GL.MultMatrix (modelViewMat);
+            GL.Begin (GL.QUADS);
+            GL.Color (color);
+            for (var i = 0; i < QUAD.Length; i++)
+                GL.Vertex (QUAD [i]);
+            GL.End ();
+            GL.PopMatrix ();
+        }
 
 		#region IDisposable implementation
 		public void Dispose () {

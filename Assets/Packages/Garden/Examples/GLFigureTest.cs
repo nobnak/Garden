@@ -26,9 +26,12 @@ namespace Garden {
             [System.Flags]
             public enum RenderTypeEnum { None = 0, Line = (1 << 0), Fill = (1 << 1), Whole = Line | Fill }
             public enum ZModeEnum { LEqual = 0, Overlay }
+            public enum FigureTypeEnum { Circle = 0, Quad }
 
             public RenderTypeEnum renderType;
             public ZModeEnum ztest;
+            public FigureTypeEnum figureType;
+
             public Transform target;
             public Vector2 size;
             public Color bodyColor;
@@ -49,12 +52,30 @@ namespace Garden {
             public void Draw(GLFigure f) {
                 ApplyZMode (f);
 
+                switch (figureType) {
+                case FigureTypeEnum.Circle:
+                    DrawCircle (f);
+                    break;
+                case FigureTypeEnum.Quad:
+                    DrawQuad (f);
+                    break;
+                }
+            }
+            public void DrawCircle(GLFigure f) {
                 if ((renderType & Data.RenderTypeEnum.Fill) != 0) {
                     f.FillCircle (target.position, Camera.main.transform.rotation, size, bodyColor);
                 }
                 if ((renderType & Data.RenderTypeEnum.Line) != 0) {
                     f.DrawCircle (target.position, Camera.main.transform.rotation, size, lineColor);
                 }                
+            }public void DrawQuad(GLFigure f) {
+                if ((renderType & Data.RenderTypeEnum.Fill) != 0) {
+                    f.FillQuad(target.position, Camera.main.transform.rotation, size, bodyColor);
+                }
+                if ((renderType & Data.RenderTypeEnum.Line) != 0) {
+                    f.DrawQuad(target.position, Camera.main.transform.rotation, size, lineColor);
+                }                
+
             }
 
         }
