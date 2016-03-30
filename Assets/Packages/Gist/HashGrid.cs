@@ -35,21 +35,25 @@ namespace Gist {
             if (_world == null)
                 return;
             
-            var center = new Vector3 (0.5f * gridWidth * cellSize, 0.5f * gridWidth * cellSize, 0.5f * gridWidth * cellSize);
+			var size = gridWidth * cellSize * Vector3.one;
+			var offset = transform.position;
             Gizmos.color = gizmoColor;
-            Gizmos.DrawWireCube (center, 2f * center);
+			Gizmos.DrawWireCube (offset + 0.5f * size, size);
 
-            var size = 0.9f * cellSize * Vector3.one;
-            var stat = _world.Stat ();
-            for (var z = 0; z < stat.GetLength (2); z++) {
-                for (var y = 0; y < stat.GetLength (1); y++) {
-                    for (var x = 0; x < stat.GetLength (0); x++) {
-                        var count = stat [x, y, z];
+			var cubeSize = 0.9f * cellSize * Vector3.one;
+			var hash = _world.GridInfo;
+			for (var z = 0; z < hash.nz; z++) {
+				for (var y = 0; y < hash.ny; y++) {
+					for (var x = 0; x < hash.nx; x++) {
+						var pos = cellSize * new Vector3 (
+							x + Mathf.FloorToInt(offset.x / cellSize) + 0.5f, 
+							y + Mathf.FloorToInt(offset.y / cellSize) + 0.5f,
+							z + Mathf.FloorToInt(offset.z / cellSize) + 0.5f);
+						var count = _world.Stat (pos);
 						if (count > 0) {
-                            var pos = new Vector3 ((x + 0.5f) * cellSize, (y + 0.5f) * cellSize, (z + 0.5f) * cellSize);
 							var h = Mathf.Clamp01((float)count / 100);
 							Gizmos.color = Jet (h, 0.5f * Mathf.Clamp01 (count / 10f));
-                            Gizmos.DrawCube (pos, size);
+                            Gizmos.DrawCube (pos, cubeSize);
                         }
 
                     }
@@ -80,6 +84,8 @@ namespace Gist {
 			this._points = new List<T> ();
 			Rebuild (cellSize, nx, ny, nz);
 		}
+
+		public Hash GridInfo { get { return _hash; } }
 
 		public void Add(T point) {
 			_points.Add (point);
@@ -131,6 +137,11 @@ namespace Gist {
 					for (var x = 0; x < _hash.nx; x++)
 						counter [x, y, z] = _grid [_hash.CellId (x, y, z)].Count;
 			return counter;
+		}
+		public int Stat(Vector3 pos) {
+			var id = _hash.CellId (pos);
+			var cell = _grid [id];
+			return cell.Count;
 		}
 
 		void AddOnGrid (T point) {
