@@ -23,10 +23,8 @@ namespace GardenSystem {
             }
         }
 
-		public override void Add(Transform plant) {
-			var p = garden.FindPlant (plant);
-			if (p != null)
-				p.tilt = InitialTilt();
+        public override void Add(Plant p) {
+            p.tilt = InitialTilt();
         }
 
 		Quaternion InitialTilt () {
@@ -36,7 +34,8 @@ namespace GardenSystem {
 		}
     }
 
-	public partial class PlantData {
+	public partial class Plant {
+        [HideInInspector]
 		public Quaternion tilt;
 	}
 }

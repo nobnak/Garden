@@ -25,6 +25,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 417742}
+  - 114: {fileID: 11487010}
   m_Layer: 0
   m_Name: Plant 2
   m_TagString: Untagged
@@ -90,6 +91,22 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 172022}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &11487010
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 189242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f7bfe096d52584cb26b5afd2b328cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  typeId: 2
+  rndr: {fileID: 0}
+  time: 0
+  stencil: 0
+  tilt: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

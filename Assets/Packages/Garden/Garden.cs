@@ -11,45 +11,50 @@ namespace GardenSystem {
 
         public float interference = 1.2f;
         public ModifierAbstract[] modifiers;
-
-        HashGrid<PlantData> _plants;
         int _typeCount;
         int[] _tmpCountPerType;
 
     	void OnEnable() {
-            _plants = new HashGrid<PlantData> ((p) => p.transform.localPosition);
             InitTypeCount (_typeCount = 0);
 			foreach (var mod in modifiers)
 				mod.Set (this);
         }
-        void OnDisable() {
-			_plants.Dispose ();
-        }
 
-        public void Add(int typeId, Transform plant) {
-            plant.transform.SetParent (transform, false);
-			_plants.Add (new PlantData (typeId, plant));
+        public void Add(Plant p) {
+            p.transform.SetParent (transform, false);
+            CharacterHashGrid.World.Add (p);
 			foreach (var mod in EnabledModifiers())
-                mod.Add (plant);
+                mod.Add (p);
         }
-        public void Remove(Transform plant) {
-			var p = FindPlant (plant);
-            if (p != null) {
-				foreach (var mod in EnabledModifiers())
-					mod.Remove (p.transform);
-				_plants.Remove (p);
+        public void Remove(Plant p) {
+			foreach (var mod in EnabledModifiers())
+				mod.Remove (p);
+            CharacterHashGrid.World.Remove (p);
+        }
+		public IEnumerable<Plant> Plants() {
+            foreach (var m in CharacterHashGrid.World) {
+                var p = m as Plant;
+                if (p != null)
+                    yield return p;
             }
+		}
+        public Plant FindPlant(Transform plant) {
+            return (Plant)CharacterHashGrid.World.Find ((i) => i.transform == plant);
+		}
+        public IEnumerable<Plant> Neighbors(Vector3 center, float distance) {
+            return CharacterHashGrid.World.Neighbors<Plant>(center, distance);
+		}
+        public int Average(out Vector3 averagedCenter, Vector3 center, float distance) {
+            var count = 0;
+            averagedCenter = Vector3.zero;
+            foreach (var n in Neighbors(center, distance)) {
+                count++;
+                averagedCenter += n.transform.position;
+            }
+            if (count > 0)
+                averagedCenter /= count;
+            return count;
         }
-		public IEnumerable<PlantData> Plants() {
-			foreach (var p in _plants.Points)
-				yield return p;
-		}
-		public PlantData FindPlant(Transform plant) {
-			return _plants.Find ((i) => i.transform == plant);
-		}
-        public IEnumerable<PlantData> Neighbors(Vector3 center, float distance) {
-            return _plants.Neighbors (center, distance);
-		}
 
 		public void InitTypeCount(int typeCount) {
 			if (_tmpCountPerType == null || _tmpCountPerType.Length < typeCount) {
@@ -70,7 +75,7 @@ namespace GardenSystem {
             System.Array.Clear (typeCounters, 0, typeCounters.Length);
 
             var total = 0;
-            foreach (var p in _plants.Neighbors(center, radius)) {
+            foreach (var p in CharacterHashGrid.World.Neighbors<Plant>(center, radius)) {
                 typeCounters [p.typeId]++;                    
                 total++;
             }
@@ -104,23 +109,9 @@ namespace GardenSystem {
 				this.garden = garden;
 			}
 
-			public virtual void Add(Transform transform) {}
-			public virtual void Remove(Transform transform) {}
+			public virtual void Add(Plant p) {}
+            public virtual void Remove(Plant p) {}
 
         }
-	}
-
-	public partial class PlantData {
-		public int typeId;
-		public Transform transform;
-
-		public PlantData(int typeId, Transform transform) {
-			this.typeId = typeId;
-			this.transform = transform;
-
-			Init();
-		}
-
-		partial void Init();
 	}
 }

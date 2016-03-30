@@ -9,7 +9,7 @@ namespace GardenSystem {
         public float lifetime = 60f;
 		public Epoch[] epochs;
 
-		List<Transform> _tmpTransforms = new List<Transform>();
+        List<Plant> _tmpDeads = new List<Plant>();
 
     	void Update () {
             var dt = Time.deltaTime;
@@ -23,20 +23,18 @@ namespace GardenSystem {
 			}
     	}
 
-        public override void Add (Transform transform) {
-            var p = garden.FindPlant (transform);
-            if (p != null)
-                p.SetTime (propTime, 0f);
+        public override void Add (Plant p) {
+            p.SetTime (propTime, 0f);
         }
 
-        public IList<Transform> DeadPlants() {
-            _tmpTransforms.Clear ();
+        public IList<Plant> DeadPlants() {
+            _tmpDeads.Clear ();
 			foreach (var p in garden.Plants())
                 if (p.time >= lifetime)
-					_tmpTransforms.Add (p.transform);
-			return _tmpTransforms;
+					_tmpDeads.Add (p);
+			return _tmpDeads;
         }
-		public void SetStencil(PlantData p, int stencil) {
+		public void SetStencil(Plant p, int stencil) {
 			foreach (var e in epochs) {
 				if (e.Match (p, stencil)) {
 					p.stencil = stencil;
@@ -53,10 +51,10 @@ namespace GardenSystem {
 			public int stencil;
 			public float speed;
 
-			public bool Match(PlantData p) {
+			public bool Match(Plant p) {
 				return Match (p, p.stencil);
 			}
-			public bool Match(PlantData p, int epochStencil) {
+			public bool Match(Plant p, int epochStencil) {
 				return fromTime <= p.time && p.time < toTime && stencil == epochStencil;
 			}
 			public float Delta(float dt) {
@@ -65,15 +63,19 @@ namespace GardenSystem {
 		}
     }
 
-	public partial class PlantData {
-		public Renderer renderer;
+	public partial class Plant {
+        [HideInInspector]
+		public Renderer rndr;
+        [HideInInspector]
 		public MaterialPropertyBlock block;
+        [HideInInspector]
 		public float time;
+        [HideInInspector]
 		public int stencil;
 
 		partial void Init() {
-			this.renderer = transform.GetComponentInChildren<Renderer>();
-			this.renderer.GetPropertyBlock(this.block = new MaterialPropertyBlock());
+			this.rndr = transform.GetComponentInChildren<Renderer>();
+			this.rndr.GetPropertyBlock(this.block = new MaterialPropertyBlock());
 			this.time = 0f;
 			this.stencil = 0;
 		}
@@ -81,7 +83,7 @@ namespace GardenSystem {
 		public void SetTime(string prop, float time) {
 			this.time = time;
 			block.SetFloat (prop, time);
-			renderer.SetPropertyBlock (block);
+			rndr.SetPropertyBlock (block);
 		}
 		public void AddTime(string prop, float dt, float lifetime) {
 			var time = this.time + dt;

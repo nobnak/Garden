@@ -24,6 +24,8 @@ namespace GardenSystem {
         public float debugHoldTime = 1f;
         public Color debugColorAdd = Color.green;
         public Color debugColorRemove = Color.red;
+        public float debugRadiusAveragedPoint = 2f;
+        public Color debugColorAveragedPoint = Color.yellow;
 
         GLFigure _figure;
         List<DebugMarker> _markers;
@@ -42,19 +44,19 @@ namespace GardenSystem {
                 var worldPos = WorldMousePos();
                 _markers.Add (new DebugMarker (worldPos, searchRadius, debugColorAdd));
 
-                var localPos = PerturbedLocalPos (worldPos);
+                var localPos = PerturbedWorld2LocalPos (worldPos);
                 var typeId = garden.Sample (localPos, searchRadius);
                 if (typeId >= 0) {
                     var p = Instantiate (planttypes [typeId]);
                     p.transform.localPosition = localPos;
-                    AddPlant (typeId, p);
+                    AddPlant (p.GetComponent<Plant>());
                 }
             }
             if (Input.GetMouseButton (1)) {
                 var worldPos = WorldMousePos();
                 _markers.Add (new DebugMarker (worldPos, searchRadius, debugColorRemove));
 
-                var localPos = PerturbedLocalPos (worldPos);
+                var localPos = PerturbedWorld2LocalPos (worldPos);
                 foreach (var p in garden.Neighbors(localPos, searchRadius)) {
                     animator.SetStencil (p, TIME_STENCIL_DIE);
                 }
@@ -72,7 +74,7 @@ namespace GardenSystem {
                 break;
             }
 
-            if (Camera.current.tag != TAG_MAIN_CAMERA)
+            if (((1 << gameObject.layer) & Camera.current.cullingMask) == 0)
                 return;
             
             _figure.ZTestMode = GLFigure.ZTestEnum.ALWAYS;
@@ -89,25 +91,41 @@ namespace GardenSystem {
                     i++;
             }
 		}
+        void OnDrawGizmos() {
+            if (!Application.isPlaying)
+                return;
+            
+            var worldPos = WorldMousePos ();
+            var localPos = World2LocalPos (worldPos);
+            Vector3 averaged;
+            var total = garden.Average (out averaged, localPos, debugRadiusAveragedPoint);
+            if (total > 0) {
+                Gizmos.color = debugColorAveragedPoint;
+                Gizmos.DrawLine (worldPos, Local2WorldPos (averaged));
+            }
+        }
 
         Vector3 WorldMousePos() {
             var garden2camInWorld = garden.transform.position - garden.targetCamera.transform.position;
             var mousePos = Input.mousePosition;
             mousePos.z = Vector3.Dot (garden2camInWorld, garden.targetCamera.transform.forward);
-            var worldPlantPos = garden.targetCamera.ScreenToWorldPoint (mousePos);
-            return worldPlantPos;
+            return garden.targetCamera.ScreenToWorldPoint (mousePos);
         }
-        Vector3 PerturbedLocalPos(Vector3 worldPlantPos) {
+        Vector3 World2LocalPos(Vector3 worldPlantPos) {
+            var localPlantPos = garden.transform.InverseTransformPoint (worldPlantPos);
+            localPlantPos.y = 0f;
+            return localPlantPos;            
+        }
+        Vector3 Local2WorldPos(Vector3 localPlantPos) { return garden.transform.TransformPoint (localPlantPos); }
+        Vector3 PerturbedWorld2LocalPos(Vector3 worldPlantPos) {
             worldPlantPos += perturbation * Random.insideUnitSphere;
-			var localPlantPos = garden.transform.InverseTransformPoint (worldPlantPos);
-			localPlantPos.y = 0f;
-			return localPlantPos;
+            return World2LocalPos (worldPlantPos);
 		}
 
-        void AddPlant (int typeId, GameObject p) {
-            garden.Add (typeId, p.transform);
+        void AddPlant (Plant p) {
+            garden.Add (p);
         }
-        void RemovePlant (Transform plant) {
+        void RemovePlant (Plant plant) {
             garden.Remove (plant);
             Destroy (plant.gameObject);
         }
@@ -133,7 +151,7 @@ namespace GardenSystem {
 
             public DebugMarker(Vector3 pos, float radius, Color color) {
                 this.pos = pos;
-                this.size = radius * Vector2.one;
+                this.size = 2f * radius * Vector2.one;
                 this.color = color;
                 this.time = Time.timeSinceLevelLoad;
             }
