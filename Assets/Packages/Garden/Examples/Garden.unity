@@ -198,12 +198,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   garden: {fileID: 1618437049}
   animator: {fileID: 243401378}
-  planttypes:
-  - {fileID: 2111876994}
-  - {fileID: 942785504}
-  - {fileID: 1011387980}
-  - {fileID: 797277379}
-  - {fileID: 1143583026}
+  plantfabs:
+  - {fileID: 11435954, guid: 63b1658c41339404588dd08eddaab470, type: 2}
+  - {fileID: 11456128, guid: ff5653ef934d9154f91e4883332ff450, type: 2}
+  - {fileID: 11487010, guid: 1112f95025acaa44fb96aefc30de4c82, type: 2}
+  - {fileID: 11499946, guid: a9e699495234d9e49a8d30a77d7e2752, type: 2}
+  - {fileID: 11452666, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
   perturbation: 1
   searchRadius: 2
   tiltPower: 1
@@ -225,10 +225,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
---- !u!1 &797277379 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 189242, guid: a9e699495234d9e49a8d30a77d7e2752, type: 2}
-  m_PrefabInternal: {fileID: 888367929}
 --- !u!1001 &888367929
 Prefab:
   m_ObjectHideFlags: 0
@@ -275,10 +271,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 417742, guid: a9e699495234d9e49a8d30a77d7e2752, type: 2}
   m_PrefabInternal: {fileID: 888367929}
---- !u!1 &942785504 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 189242, guid: ff5653ef934d9154f91e4883332ff450, type: 2}
-  m_PrefabInternal: {fileID: 1462248712}
 --- !u!1001 &1001917910
 Prefab:
   m_ObjectHideFlags: 0
@@ -325,10 +317,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 417742, guid: 63b1658c41339404588dd08eddaab470, type: 2}
   m_PrefabInternal: {fileID: 1001917910}
---- !u!1 &1011387980 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 189242, guid: 1112f95025acaa44fb96aefc30de4c82, type: 2}
-  m_PrefabInternal: {fileID: 1533633569}
 --- !u!1001 &1104145047
 Prefab:
   m_ObjectHideFlags: 0
@@ -379,10 +367,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &1143583026 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 189242, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
-  m_PrefabInternal: {fileID: 399472229}
 --- !u!1 &1224466121
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,9 +641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   updateMode: 0
   cellSize: 2
-  nx: 20
-  ny: 20
-  nz: 20
+  gridWidth: 20
   gizmoColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &1702559224
 Transform:
@@ -673,7 +655,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
---- !u!1 &2111876994 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 189242, guid: 63b1658c41339404588dd08eddaab470, type: 2}
-  m_PrefabInternal: {fileID: 1001917910}

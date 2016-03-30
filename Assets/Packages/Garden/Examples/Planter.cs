@@ -15,7 +15,7 @@ namespace GardenSystem {
 
         public Garden garden;
         public TimeAnimator animator;
-        public GameObject[] planttypes;
+		public Plant[] plantfabs;
         public float perturbation = 1f;
         public float searchRadius = 1f;
         public float tiltPower = 1f;
@@ -34,7 +34,7 @@ namespace GardenSystem {
             _figure = new GLFigure ();
             _markers = new List<DebugMarker> ();
 
-            garden.InitTypeCount (planttypes.Length);
+			garden.InitTypeCount (plantfabs.Length);
         }
         void OnDestroy() {
             _figure.Dispose();
@@ -47,7 +47,7 @@ namespace GardenSystem {
                 var localPos = PerturbedWorld2LocalPos (worldPos);
                 var typeId = garden.Sample (localPos, searchRadius);
                 if (typeId >= 0) {
-                    var p = Instantiate (planttypes [typeId]);
+					var p = Instantiate (plantfabs [typeId].gameObject);
                     p.transform.localPosition = localPos;
                     AddPlant (p.GetComponent<Plant>());
                 }
