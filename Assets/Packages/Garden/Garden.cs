@@ -22,27 +22,27 @@ namespace GardenSystem {
 
         public void Add(Plant p) {
             p.transform.SetParent (transform, false);
-            CharacterHashGrid.World.Add (p);
+            HashGrid.World.Add (p);
 			foreach (var mod in EnabledModifiers())
                 mod.Add (p);
         }
         public void Remove(Plant p) {
 			foreach (var mod in EnabledModifiers())
 				mod.Remove (p);
-            CharacterHashGrid.World.Remove (p);
+            HashGrid.World.Remove (p);
         }
 		public IEnumerable<Plant> Plants() {
-            foreach (var m in CharacterHashGrid.World) {
+            foreach (var m in HashGrid.World) {
                 var p = m as Plant;
                 if (p != null)
                     yield return p;
             }
 		}
         public Plant FindPlant(Transform plant) {
-            return (Plant)CharacterHashGrid.World.Find ((i) => i.transform == plant);
+            return (Plant)HashGrid.World.Find ((i) => i.transform == plant);
 		}
         public IEnumerable<Plant> Neighbors(Vector3 center, float distance) {
-            return CharacterHashGrid.World.Neighbors<Plant>(center, distance);
+            return HashGrid.World.Neighbors<Plant>(center, distance);
 		}
         public int Average(out Vector3 averagedCenter, Vector3 center, float distance) {
             var count = 0;
@@ -75,7 +75,7 @@ namespace GardenSystem {
             System.Array.Clear (typeCounters, 0, typeCounters.Length);
 
             var total = 0;
-            foreach (var p in CharacterHashGrid.World.Neighbors<Plant>(center, radius)) {
+            foreach (var p in HashGrid.World.Neighbors<Plant>(center, radius)) {
                 typeCounters [p.typeId]++;                    
                 total++;
             }

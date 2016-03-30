@@ -1,99 +1,164 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Gist;
 using System.Collections.Generic;
 
 namespace Gist {
-    
-    public class HashGrid<T> : System.IDisposable, IEnumerable<T> where T : class {
-        System.Func<T, Vector3> _GetPosition;
-        LinkedList<T>[] _grid;
-        List<T> _points;
-        Hash _hash;
 
-        public HashGrid(System.Func<T, Vector3> GetPosition, float cellSize, int nx, int ny, int nz) {
-            this._GetPosition = GetPosition;
-            this._points = new List<T> ();
-            Rebuild (cellSize, nx, ny, nz);
-        }
+    public class HashGrid : MonoBehaviour {
+        public enum UpdateModeEnum { Update = 0, Rebuild }
 
-        public void Add(T point) {
-            _points.Add (point);
-            AddOnGrid(point);
+        public UpdateModeEnum updateMode;
+        public float cellSize = 1f;
+        public int gridWidth = 20;
+        public Color gizmoColor = Color.white;
+
+        public static HashGrid<MonoBehaviour> World;
+
+        HashGrid<MonoBehaviour> _world;
+
+        void Awake() {
+            _world = new HashGrid<MonoBehaviour> (GetPosition, cellSize, gridWidth, gridWidth, gridWidth);
+            World = _world;
         }
-        public void Remove(T point) {
-            RemoveOnGrid(point);
-            _points.Remove (point);
+        void LateUpdate() {
+            switch (updateMode) {
+            default:
+                _world.Update ();
+                break;
+            case UpdateModeEnum.Rebuild:
+                _world.Rebuild (cellSize, gridWidth, gridWidth, gridWidth);
+                break;
+            }
         }
-        public T Find(System.Predicate<T> Predicate) {
-            return _points.Find (Predicate);
-        }
-        public IEnumerable<S> Neighbors<S>(Vector3 center, float distance) where S:T {
-            var r2 = distance * distance;
-            foreach (var id in _hash.CellIds(center, distance)) {
-                var cell = _grid [id];
-                foreach (var p in cell) {
-                    var s = p as S;
-                    if (s == null)
-                        continue;
-                    
-                    var d2 = (_GetPosition (s) - center).sqrMagnitude;
-                    if (d2 < r2)
-                        yield return s;
+        void OnDrawGizmosSelected() {
+            if (_world == null)
+                return;
+            
+            var center = new Vector3 (0.5f * gridWidth * cellSize, 0.5f * gridWidth * cellSize, 0.5f * gridWidth * cellSize);
+            Gizmos.color = gizmoColor;
+            Gizmos.DrawWireCube (center, 2f * center);
+
+            var size = 0.9f * cellSize * Vector3.one;
+            var stat = _world.Stat ();
+            for (var z = 0; z < stat.GetLength (2); z++) {
+                for (var y = 0; y < stat.GetLength (1); y++) {
+                    for (var x = 0; x < stat.GetLength (0); x++) {
+                        var count = stat [x, y, z];
+						if (count > 0) {
+                            var pos = new Vector3 ((x + 0.5f) * cellSize, (y + 0.5f) * cellSize, (z + 0.5f) * cellSize);
+							var h = Mathf.Clamp01((float)count / 100);
+							Gizmos.color = Jet (h, 0.5f * Mathf.Clamp01 (count / 10f));
+                            Gizmos.DrawCube (pos, size);
+                        }
+
+                    }
                 }
-            }
+            }                        
         }
-		public void Rebuild(float cellSize, int nx, int ny, int nz) {
-            _hash = new Hash (cellSize, nx, ny, nz);
-            var totalCells = nx * ny * nz;
-            if (_grid == null || _grid.Length != totalCells) {
-                _grid = new LinkedList<T>[totalCells];
-                for (var i = 0; i < _grid.Length; i++)
-                    _grid [i] = new LinkedList<T> ();
-            }
-            Update ();
+
+        Vector3 GetPosition(MonoBehaviour m) {
+            return m.transform.position;
+        }
+		Color Jet(float x, float a) {
+			return new Color(
+				Mathf.Clamp01(Mathf.Min(4f * x - 1.5f, -4f * x + 4.5f)),
+				Mathf.Clamp01(Mathf.Min(4f * x - 0.5f, -4f * x + 3.5f)),
+				Mathf.Clamp01(Mathf.Min(4f * x + 0.5f, -4f * x + 2.5f)),
+				a);
 		}
-        public void Update() {
-            var limit = _grid.Length;
-            for (var i = 0; i < limit; i++)
-                _grid [i].Clear ();
-            foreach (var p in _points)
-                AddOnGrid (p);
-        }
-        public int[,,] Stat() {
-            var counter = new int[_hash.nx, _hash.ny, _hash.nz];
-            for (var z = 0; z < _hash.nz; z++)
-                for (var y = 0; y < _hash.ny; y++)
-                    for (var x = 0; x < _hash.nx; x++)
-                        counter [x, y, z] = _grid [_hash.CellId (x, y, z)].Count;
-            return counter;
-        }
+    }
 
-        void AddOnGrid (T point) {
-            var id = _hash.CellId (_GetPosition (point));
-            var cell = _grid [id];
-            cell.AddLast(point);
-        }
-        void RemoveOnGrid (T point) {
-            var id = _hash.CellId (_GetPosition (point));
-            var cell = _grid [id];
-            cell.Remove (point);
-        }
+	public class HashGrid<T> : System.IDisposable, IEnumerable<T> where T : class {
+		System.Func<T, Vector3> _GetPosition;
+		LinkedList<T>[] _grid;
+		List<T> _points;
+		Hash _hash;
 
-        #region IDisposable implementation
-        public void Dispose () {}
-        #endregion
+		public HashGrid(System.Func<T, Vector3> GetPosition, float cellSize, int nx, int ny, int nz) {
+			this._GetPosition = GetPosition;
+			this._points = new List<T> ();
+			Rebuild (cellSize, nx, ny, nz);
+		}
 
-        #region IEnumerable implementation
-        public IEnumerator<T> GetEnumerator () {
-            return _points.GetEnumerator ();
-        }
-        #endregion
+		public void Add(T point) {
+			_points.Add (point);
+			AddOnGrid(point);
+		}
+		public void Remove(T point) {
+			RemoveOnGrid(point);
+			_points.Remove (point);
+		}
+		public T Find(System.Predicate<T> Predicate) {
+			return _points.Find (Predicate);
+		}
+		public IEnumerable<S> Neighbors<S>(Vector3 center, float distance) where S:T {
+			var r2 = distance * distance;
+			foreach (var id in _hash.CellIds(center, distance)) {
+				var cell = _grid [id];
+				foreach (var p in cell) {
+					var s = p as S;
+					if (s == null)
+						continue;
 
-        #region IEnumerable implementation
-        IEnumerator IEnumerable.GetEnumerator () {
-            return this.GetEnumerator ();
-        }
-        #endregion
+					var d2 = (_GetPosition (s) - center).sqrMagnitude;
+					if (d2 < r2)
+						yield return s;
+				}
+			}
+		}
+		public void Rebuild(float cellSize, int nx, int ny, int nz) {
+			_hash = new Hash (cellSize, nx, ny, nz);
+			var totalCells = nx * ny * nz;
+			if (_grid == null || _grid.Length != totalCells) {
+				_grid = new LinkedList<T>[totalCells];
+				for (var i = 0; i < _grid.Length; i++)
+					_grid [i] = new LinkedList<T> ();
+			}
+			Update ();
+		}
+		public void Update() {
+			var limit = _grid.Length;
+			for (var i = 0; i < limit; i++)
+				_grid [i].Clear ();
+			foreach (var p in _points)
+				AddOnGrid (p);
+		}
+		public int[,,] Stat() {
+			var counter = new int[_hash.nx, _hash.ny, _hash.nz];
+			for (var z = 0; z < _hash.nz; z++)
+				for (var y = 0; y < _hash.ny; y++)
+					for (var x = 0; x < _hash.nx; x++)
+						counter [x, y, z] = _grid [_hash.CellId (x, y, z)].Count;
+			return counter;
+		}
+
+		void AddOnGrid (T point) {
+			var id = _hash.CellId (_GetPosition (point));
+			var cell = _grid [id];
+			cell.AddLast(point);
+		}
+		void RemoveOnGrid (T point) {
+			var id = _hash.CellId (_GetPosition (point));
+			var cell = _grid [id];
+			cell.Remove (point);
+		}
+
+		#region IDisposable implementation
+		public void Dispose () {}
+		#endregion
+
+		#region IEnumerable implementation
+		public IEnumerator<T> GetEnumerator () {
+			return _points.GetEnumerator ();
+		}
+		#endregion
+
+		#region IEnumerable implementation
+		IEnumerator IEnumerable.GetEnumerator () {
+			return this.GetEnumerator ();
+		}
+		#endregion
 
 		public class Hash {
 			public readonly Vector3 gridSize;
@@ -108,19 +173,19 @@ namespace Gist {
 				this.gridSize = new Vector3(nx * cellSize, ny * cellSize, nz * cellSize);
 			}
 			public IEnumerable<int> CellIds(Vector3 position, float radius) {
-                var fromx = CellX (position.x - radius);
-                var fromy = CellY (position.y - radius);
-                var fromz = CellZ (position.z - radius);
-                var widthx = CellX (position.x + radius) - fromx;
-                var widthy = CellY (position.y + radius) - fromy;
-                var widthz = CellZ (position.z + radius) - fromz;
-                if (widthx < 0)
-                    widthx += nx;
-                if (widthy < 0)
-                    widthy += ny;
-                if (widthz < 0)
-                    widthz += nz;
-                
+				var fromx = CellX (position.x - radius);
+				var fromy = CellY (position.y - radius);
+				var fromz = CellZ (position.z - radius);
+				var widthx = CellX (position.x + radius) - fromx;
+				var widthy = CellY (position.y + radius) - fromy;
+				var widthz = CellZ (position.z + radius) - fromz;
+				if (widthx < 0)
+					widthx += nx;
+				if (widthy < 0)
+					widthy += ny;
+				if (widthz < 0)
+					widthz += nz;
+
 				for (var z = 0; z <= widthz; z++)
 					for (var y = 0; y <= widthy; y++)
 						for (var x = 0; x <= widthx; x++)
@@ -130,9 +195,9 @@ namespace Gist {
 				return CellId (CellX (position.x), CellY (position.y), CellZ (position.z));
 			}
 			public int CellId(int x, int y, int z) {
-                x = Mod (x, nx);
-                y = Mod (y, ny);
-                z = Mod (z, nz);
+				x = Mod (x, nx);
+				y = Mod (y, ny);
+				z = Mod (z, nz);
 				return x + (y + z * ny) * nx;
 			}
 			public int CellX(float posX) {
@@ -147,9 +212,9 @@ namespace Gist {
 				posZ -= gridSize.z * Mathf.CeilToInt (posZ / gridSize.z);
 				return (int)(posZ / cellSize);
 			}
-            public int Mod(int x, int mod) {
-                return x - Mathf.FloorToInt ((float)x / mod) * mod;
-            }
+			public int Mod(int x, int mod) {
+				return x - Mathf.FloorToInt ((float)x / mod) * mod;
+			}
 		}
-    }
+	}
 }
