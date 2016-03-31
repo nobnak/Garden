@@ -40,7 +40,7 @@ namespace Gist {
             Gizmos.color = gizmoColor;
 			Gizmos.DrawWireCube (offset + 0.5f * size, size);
 
-			var cubeSize = 0.9f * cellSize * Vector3.one;
+			var cubeSize = 0.5f * cellSize * Vector3.one;
 			var hash = _world.GridInfo;
 			for (var z = 0; z < hash.nz; z++) {
 				for (var y = 0; y < hash.ny; y++) {
