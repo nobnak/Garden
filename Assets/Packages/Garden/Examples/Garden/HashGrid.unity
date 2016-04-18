@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7e3ded9ceaa13045926ea11a7078b7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  marker: {fileID: 1354689126}
+  marker: {fileID: 1304266514}
   posfreq: 1
   posrad: 10
   rotfreq: 0.1
@@ -274,22 +274,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 429450, guid: 7789d9586a5edcb469dda980485d9e42, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 429450, guid: 7789d9586a5edcb469dda980485d9e42, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 429450, guid: 7789d9586a5edcb469dda980485d9e42, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 0.1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7789d9586a5edcb469dda980485d9e42, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &1354689126 stripped
+--- !u!114 &1304266514 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11488860, guid: 7789d9586a5edcb469dda980485d9e42,
     type: 2}
