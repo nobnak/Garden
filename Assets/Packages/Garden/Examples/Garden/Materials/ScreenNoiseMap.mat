@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: ScreenNoiseMap
   m_Shader: {fileID: 4800000, guid: ce2e297fe55475e41bc89940f3dfb70a, type: 3}
-  m_ShaderKeywords: OUTPUT_NORMAL
+  m_ShaderKeywords: OUTPUT_HEIGHT
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
   stringTagMap: {}

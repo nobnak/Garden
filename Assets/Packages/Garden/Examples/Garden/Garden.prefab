@@ -12,6 +12,8 @@ GameObject:
   - 114: {fileID: 11468636}
   - 114: {fileID: 11406472}
   - 114: {fileID: 11427098}
+  - 114: {fileID: 11473572}
+  - 114: {fileID: 11431416}
   m_Layer: 0
   m_Name: Garden
   m_TagString: Untagged
@@ -42,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11e3b8cb7b41b1e49862a987c47de5b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  garden: {fileID: 0}
+  garden: {fileID: 11468636}
   noiseMap: {fileID: 11455004}
   tiltPower: 1
 --- !u!114 &11427098
@@ -56,7 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8a79b90c18def94586bbe65432115c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  garden: {fileID: 0}
+  garden: {fileID: 11468636}
   propTime: _AnimTex_T
   lifetime: 60
   epochs:
@@ -80,6 +82,34 @@ MonoBehaviour:
     toTime: 60
     stencil: 1
     speed: 10
+--- !u!114 &11431416
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47d7a53d51fcea44181a28fca86ad26a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  garden: {fileID: 11468636}
+  animator: {fileID: 11427098}
+  plantfabs:
+  - {fileID: 11435954, guid: 63b1658c41339404588dd08eddaab470, type: 2}
+  - {fileID: 11456128, guid: ff5653ef934d9154f91e4883332ff450, type: 2}
+  - {fileID: 11487010, guid: 1112f95025acaa44fb96aefc30de4c82, type: 2}
+  - {fileID: 11499946, guid: a9e699495234d9e49a8d30a77d7e2752, type: 2}
+  - {fileID: 11452666, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
+  perturbation: 1
+  searchRadius: 2
+  tiltPower: 1
+  debugMode: 1
+  debugHoldTime: 0.1
+  debugColorAdd: {r: 0, g: 1, b: 0, a: 0.478}
+  debugColorRemove: {r: 1, g: 0, b: 0, a: 0.478}
+  debugRadiusAveragedPoint: 2
+  debugColorAveragedPoint: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!114 &11455004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -114,12 +144,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a36e05bfd8d01ea478454bd48cae7b16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnSetCamera:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11455004}
+        m_MethodName: SetTargetCamera
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: GardenSystem.Garden+CameraEvent, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   targetCamera: {fileID: 0}
-  plantRange: 1
   interference: 1.15
   modifiers:
   - {fileID: 11406472}
   - {fileID: 11427098}
+--- !u!114 &11473572
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 179148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c59d63f2a4553464f9fb305ed6fe9b57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  updateMode: 0
+  cellSize: 2
+  gridWidth: 20
+  gizmoColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

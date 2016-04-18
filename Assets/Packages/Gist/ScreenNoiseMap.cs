@@ -65,6 +65,9 @@ namespace Gist {
             ReleaseTex ();
         }
 
+		public void SetTargetCamera(Camera cam) {
+			targetCam = cam;
+		}
         public Vector3 GetZNormalFromUv(Vector2 uv) {
             var n = GetNormal (uv);
             return n.normalized;

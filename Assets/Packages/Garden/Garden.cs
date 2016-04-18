@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Text;
 using Gist;
+using UnityEngine.Events;
 
 namespace GardenSystem {
 
     public class Garden : MonoBehaviour {
+		public CameraEvent OnSetCamera;
+
         public Camera targetCamera;
 
         public float interference = 1.2f;
@@ -20,6 +23,10 @@ namespace GardenSystem {
 				mod.Set (this);
         }
 
+		public void SetCamera(Camera cam) {
+			targetCamera = cam;
+			OnSetCamera.Invoke (cam);
+		}
         public void Add(Plant p) {
             p.transform.SetParent (transform, false);
             HashGrid.World.Add (p);
@@ -113,5 +120,8 @@ namespace GardenSystem {
             public virtual void Remove(Plant p) {}
 
         }
+
+		[System.Serializable]
+		public class CameraEvent : UnityEngine.Events.UnityEvent<Camera> {}
 	}
 }

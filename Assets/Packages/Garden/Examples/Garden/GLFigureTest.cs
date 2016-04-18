@@ -2,7 +2,7 @@
 using System.Collections;
 using Gist;
 
-namespace Garden {
+namespace GardenSystem {
 
 	public class GLFigureTest : MonoBehaviour {
         public Data[] datas;
