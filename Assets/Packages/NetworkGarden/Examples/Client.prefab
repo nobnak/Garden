@@ -39,6 +39,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82664997ab64cf340aa9b86d09d5e027, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gardenfab: {fileID: 11468636, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

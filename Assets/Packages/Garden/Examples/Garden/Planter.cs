@@ -6,7 +6,8 @@ using Gist;
 namespace GardenSystem {
 
 	public class Planter : MonoBehaviour {
-        public enum DebugModeEnum { None = 0, DrawMarker }
+        public enum DebugInputModeEnum { None = 0, Mouse }
+        public enum DebugVisualModeEnum { None = 0, Marker }
 
         public const string TAG_MAIN_CAMERA = "MainCamera";
 		public const int TIME_STENCIL_BIRTH = 0;
@@ -20,7 +21,8 @@ namespace GardenSystem {
         public float searchRadius = 1f;
         public float tiltPower = 1f;
 
-        public DebugModeEnum debugMode;
+        public DebugInputModeEnum debugInputMode;
+        public DebugVisualModeEnum debugVisualMode;
         public float debugHoldTime = 1f;
         public Color debugColorAdd = Color.green;
         public Color debugColorRemove = Color.red;
@@ -40,25 +42,15 @@ namespace GardenSystem {
             _figure.Dispose();
         }
     	void Update () {
-            if (Input.GetMouseButton (0)) {
-                var worldPos = WorldMousePos();
-                _markers.Add (new DebugMarker (worldPos, searchRadius, debugColorAdd));
+            if (debugInputMode != DebugInputModeEnum.None) {
+                if (Input.GetMouseButton (0)) {
+                    var worldPos = WorldMousePos ();
+                    AddCreationMarker (worldPos);
 
-                var localPos = PerturbedWorld2LocalPos (worldPos);
-                var typeId = garden.Sample (localPos, searchRadius);
-                if (typeId >= 0) {
-					var p = Instantiate (plantfabs [typeId].gameObject);
-                    p.transform.localPosition = localPos;
-                    AddPlant (p.GetComponent<Plant>());
                 }
-            }
-            if (Input.GetMouseButton (1)) {
-                var worldPos = WorldMousePos();
-                _markers.Add (new DebugMarker (worldPos, searchRadius, debugColorRemove));
-
-                var localPos = PerturbedWorld2LocalPos (worldPos);
-                foreach (var p in garden.Neighbors(localPos, searchRadius)) {
-                    animator.SetStencil (p, TIME_STENCIL_DIE);
+                if (Input.GetMouseButton (1)) {
+                    var worldPos = WorldMousePos ();
+                    AddDestructionMarker (worldPos);
                 }
             }
 
@@ -66,11 +58,11 @@ namespace GardenSystem {
                 RemovePlant (p);
         }
 		void OnRenderObject() {
-            switch (debugMode) {
+            switch (debugVisualMode) {
             default:
                 _markers.Clear ();
                 return;
-            case DebugModeEnum.DrawMarker:
+            case DebugVisualModeEnum.Marker:
                 break;
             }
 
@@ -105,6 +97,29 @@ namespace GardenSystem {
             }
         }
 
+        public void AddCreationMarker (Vector3 worldPos) {
+            _markers.Add (new DebugMarker (worldPos, searchRadius, debugColorAdd));
+            var localPos = PerturbedWorld2LocalPos (worldPos);
+            var typeId = garden.Sample (localPos, searchRadius);
+            if (typeId >= 0) {
+                var p = Instantiate (typeId);
+                p.transform.localPosition = localPos;
+                AddPlant (p.GetComponent<Plant> ());
+            }
+        }
+        public void AddDestructionMarker (Vector3 worldPos) {
+            _markers.Add (new DebugMarker (worldPos, searchRadius, debugColorRemove));
+            var localPos = PerturbedWorld2LocalPos (worldPos);
+            foreach (var p in garden.Neighbors (localPos, searchRadius)) {
+                animator.SetStencil (p, TIME_STENCIL_DIE);
+            }
+        }
+
+        public virtual GameObject Instantiate(int typeId) {
+            return Instantiate (plantfabs [typeId].gameObject);
+        }
+
+
         Vector3 WorldMousePos() {
             var garden2camInWorld = garden.transform.position - garden.targetCamera.transform.position;
             var mousePos = Input.mousePosition;
@@ -120,7 +135,7 @@ namespace GardenSystem {
         Vector3 PerturbedWorld2LocalPos(Vector3 worldPlantPos) {
             worldPlantPos += perturbation * Random.insideUnitSphere;
             return World2LocalPos (worldPlantPos);
-		}
+        }
 
         void AddPlant (Plant p) {
             garden.Add (p);
