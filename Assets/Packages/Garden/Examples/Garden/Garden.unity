@@ -85,6 +85,63 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &271108911
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 271108912}
+  - 114: {fileID: 271108913}
+  - 65: {fileID: 271108914}
+  m_Layer: 0
+  m_Name: Dartboard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &271108912
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 271108911}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 100, y: 100, z: 1}
+  m_Children: []
+  m_Father: {fileID: 549489363}
+  m_RootOrder: 0
+--- !u!114 &271108913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 271108911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9586d2407b03aff45b59e6950cac408d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugMarkerVisual: 0
+  boundaryMode: 0
+  debugMarkerLifetime: 1
+  debugMarkerColor: {r: 0, g: 1, b: 0, a: 1}
+  debugBoardColor: {r: 0.21800005, g: 1, b: 0, a: 0.134}
+--- !u!65 &271108914
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 271108911}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &339546939
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,6 +220,86 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 417742, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
   m_PrefabInternal: {fileID: 399472229}
+--- !u!1 &549489362
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 549489363}
+  - 114: {fileID: 549489364}
+  - 114: {fileID: 549489365}
+  m_Layer: 0
+  m_Name: Sensor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &549489363
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 549489362}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 271108912}
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+--- !u!114 &549489364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 549489362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aa6e66c4389a87409e2e053e532f43c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCamera: {fileID: 1224466125}
+  planter: {fileID: 1906503301}
+  dartboard: {fileID: 271108913}
+--- !u!114 &549489365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 549489362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 580a97464ae387f4bb5d0ced5d8d3f6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnReceive:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 549489364}
+        m_MethodName: OnReceive
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: OSC.CapsuleEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  OnError:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: OSC.ExceptionEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  sendMode: 0
+  localPort: 6666
+  remoteHost: localhost
+  remotePort: 6667
 --- !u!1001 &888367929
 Prefab:
   m_ObjectHideFlags: 0
@@ -544,3 +681,9 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!114 &1906503301 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11431416, guid: deae66bd59bc35249918fd8aef317cfe,
+    type: 2}
+  m_PrefabInternal: {fileID: 1104145047}
+  m_Script: {fileID: 11500000, guid: 47d7a53d51fcea44181a28fca86ad26a, type: 3}

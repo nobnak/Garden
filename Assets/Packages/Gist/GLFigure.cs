@@ -133,7 +133,7 @@ namespace Gist {
 
 		#region IDisposable implementation
 		public void Dispose () {
-			GameObject.Destroy (_lineMat);
+			GameObject.DestroyImmediate(_lineMat);
 		}
 		#endregion
 	}
