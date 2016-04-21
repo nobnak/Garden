@@ -8,11 +8,13 @@ using UnityEngine;
 
 namespace OSC {
 	public class OscPort : MonoBehaviour {
+        public enum ListenModeEnum { Server = 0, Client }
 		public enum SendModeEnum { Normal = 0, Broadcast }
 
 		public CapsuleEvent OnReceive;
 		public ExceptionEvent OnError;
 
+        public ListenModeEnum listenMode;
 		public SendModeEnum sendMode;
 		public int localPort = 0;
 		public string remoteHost = "localhost";
@@ -43,7 +45,14 @@ namespace OSC {
 					break;
 				}
 
-				_udp = new UdpClient (localPort, AddressFamily.InterNetwork);
+                switch (listenMode) {
+                default:
+                    _udp = new UdpClient(new IPEndPoint(IPAddress.Any, localPort));
+                    break;
+                case ListenModeEnum.Client:
+				    _udp = new UdpClient (localPort, AddressFamily.InterNetwork);
+                    break;
+                }
 				_udp.BeginReceive(_callback, null);
 			} catch (System.Exception e) {
 				RaiseError (e);

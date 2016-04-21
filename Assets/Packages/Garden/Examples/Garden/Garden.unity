@@ -293,13 +293,25 @@ MonoBehaviour:
       PublicKeyToken=null
   OnError:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 549489364}
+        m_MethodName: OnError
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: OSC.ExceptionEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  listenMode: 0
   sendMode: 0
   localPort: 6666
   remoteHost: localhost
-  remotePort: 6667
+  remotePort: 6666
 --- !u!1001 &888367929
 Prefab:
   m_ObjectHideFlags: 0

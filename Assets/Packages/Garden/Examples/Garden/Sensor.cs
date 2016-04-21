@@ -44,6 +44,10 @@ namespace GardenSystem {
                     planter.AddDestructionMarker (worldPos);
             }
         }
+        public void OnError(System.Exception e) {
+            Debug.LogFormat ("Exception {0}", e);
+        }
+
 
         bool Contact(Vector3 uv, out Vector3 worldPos) {
             var ray = targetCamera.ViewportPointToRay(uv);
