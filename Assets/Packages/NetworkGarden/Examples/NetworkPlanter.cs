@@ -6,11 +6,12 @@ using GardenSystem;
 using UnityEngine.Networking;
 
 namespace NetworkGardenSystem {
+    
     public class NetworkPlanter : NetworkBehaviour {
-        public Camera targetCam;
+        public string nameTargetCam = "Main Camera";
+        public Collider ground;
 
-        Collider _collider;
-        Planter _planter;
+        Camera _targetCam;
 
         void Update() {
             if (isServer)
@@ -18,31 +19,32 @@ namespace NetworkGardenSystem {
         }
 
         void UpdateServer() {
-            if (_collider == null)
-                _collider = GetComponent<Collider> ();
-            if (_planter == null)
-                _planter = FindObjectOfType<Planter> ();
+            if (_targetCam == null)
+                _targetCam = GameObject.Find (nameTargetCam).GetComponent<Camera>();
 
-            if (_collider != null && _planter != null) {
+            if (ground != null) {
                 if (Input.GetMouseButton (0)) {
-                    Ray ray = targetCam.ScreenPointToRay (Input.mousePosition);
+                    Ray ray = _targetCam.ScreenPointToRay (Input.mousePosition);
                     RaycastHit hit;
-                    if (_collider.Raycast(ray, out hit, float.MaxValue)) {
+                    if (ground.Raycast (ray, out hit, float.MaxValue)) {
                         RpcAddCreationMarker (hit.point);
                     }
+                } else if (Input.GetMouseButton (1)) {
+                    Ray ray = _targetCam.ScreenPointToRay (Input.mousePosition);
+                    RaycastHit hit;
+                    if (ground.Raycast (ray, out hit, float.MaxValue))
+                        RpcAddDestructionMarker (hit.point);
                 }
             }
         }
 
         [ClientRpc]
         void RpcAddCreationMarker(Vector3 worldPoint) {
-            Debug.LogFormat ("Add Creation Marker");
-            _planter.AddCreationMarker (worldPoint);
+            Planter.Instance.AddCreationMarker (worldPoint);
         }
         [ClientRpc]
         void RpcAddDestructionMarker (Vector3 worldPoint) {
-            Debug.LogFormat ("Add Destruction Marker");
-            _planter.AddDestructionMarker (worldPoint);
+            Planter.Instance.AddDestructionMarker (worldPoint);
         }
     }
 }

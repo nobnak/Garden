@@ -32,7 +32,12 @@ namespace GardenSystem {
         GLFigure _figure;
         List<DebugMarker> _markers;
 
+        static Planter _instance;
+
+        public static Planter Instance { get { return _instance; } }
+
         void Start() {
+            _instance = this;
             _figure = new GLFigure ();
             _markers = new List<DebugMarker> ();
 
