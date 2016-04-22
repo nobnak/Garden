@@ -19,6 +19,7 @@ namespace GardenSystem {
 				foreach (var e in epochs) {
 					if (e.Match (p)) {
 						p.AddTime (e.Delta(dt), lifetime);
+                        p.SetAlpha (alphaScale * alphaCurve.Evaluate (p.time));
 						break;
 					}
 				}

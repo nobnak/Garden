@@ -59,8 +59,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   garden: {fileID: 11468636}
-  propTime: _AnimTex_T
   lifetime: 60
+  alphaScale: 1
+  alphaCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   epochs:
   - fromTime: 0
     toTime: 10
@@ -101,16 +107,18 @@ MonoBehaviour:
   - {fileID: 11487010, guid: 1112f95025acaa44fb96aefc30de4c82, type: 2}
   - {fileID: 11499946, guid: a9e699495234d9e49a8d30a77d7e2752, type: 2}
   - {fileID: 11452666, guid: 4f8f8db36eee90b428f9e74ae87146ab, type: 2}
-  perturbation: 1
-  searchRadius: 2
-  tiltPower: 1
-  debugInputMode: 0
-  debugVisualMode: 1
-  debugHoldTime: 0.1
-  debugColorAdd: {r: 0, g: 1, b: 0, a: 0.478}
-  debugColorRemove: {r: 1, g: 0, b: 0, a: 0.478}
-  debugRadiusAveragedPoint: 2
-  debugColorAveragedPoint: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  data:
+    perturbation: 1.5
+    searchRadius: 1
+    limitNeighborCount: 40
+  debugData:
+    debugInputMode: 0
+    debugVisualMode: 1
+    debugHoldTime: 0.1
+    debugColorAdd: {r: 0, g: 1, b: 0, a: 0.5}
+    debugColorRemove: {r: 1, g: 0, b: 0, a: 0.5}
+    debugRadiusAveragedPoint: 2
+    debugColorAveragedPoint: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!114 &11455004
 MonoBehaviour:
   m_ObjectHideFlags: 1

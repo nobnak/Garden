@@ -439,18 +439,6 @@ Prefab:
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 1224466125}
-    - target: {fileID: 11431416, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: debugData.debugVisualMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11431416, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: data.perturbation
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11431416, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: data.limitNeighborCount
-      value: 40
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
   m_IsPrefabParent: 0
