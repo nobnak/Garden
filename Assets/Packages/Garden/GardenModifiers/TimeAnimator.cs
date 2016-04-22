@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Gist;
 
 namespace GardenSystem {
         
 	public class TimeAnimator : Garden.ModifierAbstract {
-        public string propTime = "_AnimTex_T";
         public float lifetime = 60f;
+        public float alphaScale = 1f;
+        public AnimationCurve alphaCurve;
 		public Epoch[] epochs;
 
         List<Plant> _tmpDeads = new List<Plant>();
@@ -16,7 +18,7 @@ namespace GardenSystem {
 			foreach (var p in garden.Plants()) {
 				foreach (var e in epochs) {
 					if (e.Match (p)) {
-						p.AddTime (propTime, e.Delta(dt), lifetime);
+						p.AddTime (e.Delta(dt), lifetime);
 						break;
 					}
 				}
@@ -24,7 +26,7 @@ namespace GardenSystem {
     	}
 
         public override void Add (Plant p) {
-            p.SetTime (propTime, 0f);
+            p.SetTime (0f);
         }
 
         public IList<Plant> DeadPlants() {
@@ -63,33 +65,40 @@ namespace GardenSystem {
 		}
     }
 
-	public partial class Plant {
-        [HideInInspector]
-		public Renderer rndr;
-        [HideInInspector]
-		public MaterialPropertyBlock block;
+    public partial class Plant {
+        public const string PROP_TIME = "_AnimTex_T";
+        public const string PROP_COLOR = "_Color";
+
+        public MaterialPropertyBlockChanied block;
         [HideInInspector]
 		public float time;
         [HideInInspector]
-		public int stencil;
+        public int stencil;
+        public Color color;
+
+        Color _initColor;
 
 		partial void Init() {
-			this.rndr = transform.GetComponentInChildren<Renderer>();
-			this.rndr.GetPropertyBlock(this.block = new MaterialPropertyBlock());
+			var rndr = transform.GetComponentInChildren<Renderer>();
+            this.block = new MaterialPropertyBlockChanied(rndr);
+            this.color = _initColor = block.GetDefaultColor(PROP_COLOR);
 			this.time = 0f;
 			this.stencil = 0;
 		}
 
-		public void SetTime(string prop, float time) {
-			this.time = time;
-			block.SetFloat (prop, time);
-			rndr.SetPropertyBlock (block);
-		}
-		public void AddTime(string prop, float dt, float lifetime) {
-			var time = this.time + dt;
-			if (time >= lifetime)
-				time = lifetime;
-			SetTime(prop, time);
-		}
+        public void SetTime(float time) {
+            this.time = time;
+            block.SetFloat (PROP_TIME, time).Apply ();
+        }
+        public void AddTime(float dt, float lifetime) {
+            var time = this.time + dt;
+            if (time >= lifetime)
+                time = lifetime;
+            SetTime(time);
+        }
+        public void SetAlpha(float alpha) {
+            color.a = alpha * _initColor.a;
+            block.SetColor (PROP_COLOR, color).Apply ();
+        }
 	}
 }
