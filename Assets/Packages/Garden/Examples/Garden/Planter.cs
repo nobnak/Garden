@@ -6,9 +6,6 @@ using Gist;
 namespace GardenSystem {
 
 	public class Planter : MonoBehaviour {
-        public enum DebugInputModeEnum { None = 0, Mouse }
-        public enum DebugVisualModeEnum { None = 0, Marker }
-
         public const string TAG_MAIN_CAMERA = "MainCamera";
 		public const int TIME_STENCIL_BIRTH = 0;
 		public const int TIME_STENCIL_DIE = 1;
@@ -17,17 +14,8 @@ namespace GardenSystem {
         public Garden garden;
         public TimeAnimator animator;
 		public Plant[] plantfabs;
-        public float perturbation = 1f;
-        public float searchRadius = 1f;
-        public float tiltPower = 1f;
-
-        public DebugInputModeEnum debugInputMode;
-        public DebugVisualModeEnum debugVisualMode;
-        public float debugHoldTime = 1f;
-        public Color debugColorAdd = Color.green;
-        public Color debugColorRemove = Color.red;
-        public float debugRadiusAveragedPoint = 2f;
-        public Color debugColorAveragedPoint = Color.yellow;
+        public Data data;
+        public DebugData debugData;
 
         GLFigure _figure;
         List<DebugMarker> _markers;
@@ -47,7 +35,7 @@ namespace GardenSystem {
             _figure.Dispose();
         }
     	void Update () {
-            if (debugInputMode != DebugInputModeEnum.None) {
+            if (debugData.debugInputMode != DebugData.DebugInputModeEnum.None) {
                 if (Input.GetMouseButton (0)) {
                     var worldPos = WorldMousePos ();
                     AddCreationMarker (worldPos);
@@ -63,11 +51,11 @@ namespace GardenSystem {
                 RemovePlant (p);
         }
 		void OnRenderObject() {
-            switch (debugVisualMode) {
+            switch (debugData.debugVisualMode) {
             default:
                 _markers.Clear ();
                 return;
-            case DebugVisualModeEnum.Marker:
+            case DebugData.DebugVisualModeEnum.Marker:
                 break;
             }
 
@@ -77,7 +65,7 @@ namespace GardenSystem {
             _figure.ZTestMode = GLFigure.ZTestEnum.ALWAYS;
             _figure.ZWriteMode = false;
 
-            var timeLimit = Time.timeSinceLevelLoad - debugHoldTime;
+            var timeLimit = Time.timeSinceLevelLoad - debugData.debugHoldTime;
             var rot = Camera.main.transform.rotation;
             for (var i = 0; i < _markers.Count;) {
                 var m = _markers [i];
@@ -95,27 +83,28 @@ namespace GardenSystem {
             var worldPos = WorldMousePos ();
             var localPos = World2LocalPos (worldPos);
             Vector3 averaged;
-            var total = garden.Average (out averaged, localPos, debugRadiusAveragedPoint);
+            var total = garden.Average (out averaged, localPos, debugData.debugRadiusAveragedPoint);
             if (total > 0) {
-                Gizmos.color = debugColorAveragedPoint;
+                Gizmos.color = debugData.debugColorAveragedPoint;
                 Gizmos.DrawLine (worldPos, Local2WorldPos (averaged));
             }
         }
 
         public void AddCreationMarker (Vector3 worldPos) {
-            _markers.Add (new DebugMarker (worldPos, searchRadius, debugColorAdd));
+            _markers.Add (new DebugMarker (worldPos, data.searchRadius, debugData.debugColorAdd));
             var localPos = PerturbedWorld2LocalPos (worldPos);
-            var typeId = garden.Sample (localPos, searchRadius);
-            if (typeId >= 0) {
+            int neighborCount;
+            var typeId = garden.Sample (localPos, data.searchRadius, out neighborCount);
+            if (typeId >= 0 && neighborCount < data.limitNeighborCount) {
                 var p = Instantiate (typeId);
                 p.transform.localPosition = localPos;
                 AddPlant (p.GetComponent<Plant> ());
             }
         }
         public void AddDestructionMarker (Vector3 worldPos) {
-            _markers.Add (new DebugMarker (worldPos, searchRadius, debugColorRemove));
+            _markers.Add (new DebugMarker (worldPos, data.searchRadius, debugData.debugColorRemove));
             var localPos = PerturbedWorld2LocalPos (worldPos);
-            foreach (var p in garden.Neighbors (localPos, searchRadius)) {
+            foreach (var p in garden.Neighbors (localPos, data.searchRadius)) {
                 animator.SetStencil (p, TIME_STENCIL_DIE);
             }
         }
@@ -138,7 +127,7 @@ namespace GardenSystem {
         }
         Vector3 Local2WorldPos(Vector3 localPlantPos) { return garden.transform.TransformPoint (localPlantPos); }
         Vector3 PerturbedWorld2LocalPos(Vector3 worldPlantPos) {
-            worldPlantPos += perturbation * Random.insideUnitSphere;
+            worldPlantPos += data.perturbation * data.searchRadius * Random.insideUnitSphere;
             return World2LocalPos (worldPlantPos);
         }
 
@@ -175,6 +164,27 @@ namespace GardenSystem {
                 this.color = color;
                 this.time = Time.timeSinceLevelLoad;
             }
+        }
+
+        [System.Serializable]
+        public class Data {
+            public float perturbation = 1.5f;
+            public float searchRadius = 1f;
+            public int limitNeighborCount = 40;
+        }
+
+        [System.Serializable]
+        public class DebugData {
+            public enum DebugInputModeEnum { None = 0, Mouse }
+            public enum DebugVisualModeEnum { None = 0, Marker }
+
+            public DebugInputModeEnum debugInputMode;
+            public DebugVisualModeEnum debugVisualMode;
+            public float debugHoldTime = 0.1f;
+            public Color debugColorAdd = new Color (0f, 1f, 0f, 0.5f);
+            public Color debugColorRemove = new Color(1f, 0f, 0f, 0.5f);
+            public float debugRadiusAveragedPoint = 2f;
+            public Color debugColorAveragedPoint = Color.yellow;
         }
     }
 }

@@ -69,8 +69,8 @@ namespace GardenSystem {
 				System.Array.Resize (ref _tmpCountPerType, _typeCount);
 			}
 		}
-        public int Sample(Vector3 localPos, float plantRange) {
-			var totalCount = CountNeighbors(_tmpCountPerType, localPos, plantRange);
+        public int Sample(Vector3 localPos, float plantRange, out int totalCount) {
+			totalCount = CountNeighbors(_tmpCountPerType, localPos, plantRange);
 			var w = WeightFunc(_tmpCountPerType, totalCount);
 			int typeId;
 			if (RouletteWheelSelection.Sample (out typeId, int.MaxValue, 1f, w, _typeCount))

@@ -13,6 +13,8 @@ namespace GardenSystem {
         public Planter planter;
         public Dartboard dartboard;
 
+        public Data data;
+
         GLFigure _fig;
 
         void Update() {
@@ -72,7 +74,9 @@ namespace GardenSystem {
                 return new SensorInput (new Vector3 (x, y, z), new Vector2 (w, h));
             }
         }
-
-
+        [System.Serializable]
+        public class Data {
+            public int limitInput = 10;
+        }
     }
 }

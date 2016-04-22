@@ -94,7 +94,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 271108912}
   - 114: {fileID: 271108913}
-  - 65: {fileID: 271108914}
   m_Layer: 0
   m_Name: Dartboard
   m_TagString: Untagged
@@ -126,22 +125,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugMarkerVisual: 0
-  boundaryMode: 0
+  boundaryMode: 1
   debugMarkerLifetime: 1
   debugMarkerColor: {r: 0, g: 1, b: 0, a: 1}
-  debugBoardColor: {r: 0.21800005, g: 1, b: 0, a: 0.134}
---- !u!65 &271108914
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 271108911}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 0}
-  m_Center: {x: 0, y: 0, z: 0}
+  debugBoardColor: {r: 0.84512, g: 1, b: 0.84000003, a: 0.134}
 --- !u!1 &339546939
 GameObject:
   m_ObjectHideFlags: 0
@@ -264,6 +251,8 @@ MonoBehaviour:
   targetCamera: {fileID: 1224466125}
   planter: {fileID: 1906503301}
   dartboard: {fileID: 271108913}
+  data:
+    limitInput: 10
 --- !u!114 &549489365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,11 +296,10 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: OSC.ExceptionEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  listenMode: 0
-  sendMode: 0
   localPort: 6666
-  remoteHost: localhost
-  remotePort: 6666
+  defaultRemoteHost: localhost
+  defaultRemotePort: 10000
+  limitReceiveBuffer: 10
 --- !u!1001 &888367929
 Prefab:
   m_ObjectHideFlags: 0
@@ -451,6 +439,18 @@ Prefab:
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 1224466125}
+    - target: {fileID: 11431416, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: debugData.debugVisualMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11431416, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: data.perturbation
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11431416, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: data.limitNeighborCount
+      value: 40
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
   m_IsPrefabParent: 0

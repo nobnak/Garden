@@ -6,10 +6,11 @@ using System.Collections.Generic;
 namespace GardenSystem {
 
     [ExecuteInEditMode]
-    [RequireComponent(typeof(Collider))]
     public class Dartboard : MonoBehaviour {
         public enum DebugMarkerVisualEnum { Hide = 0, Draw }
         public enum BoundaryModeEnum { Clamped = 0, Free }
+
+        public const float EPSILON = 1e-3f;
 
         public DebugMarkerVisualEnum debugMarkerVisual;
         public BoundaryModeEnum boundaryMode;
@@ -18,14 +19,12 @@ namespace GardenSystem {
         public Color debugMarkerColor = Color.green;
         public Color debugBoardColor = Color.red;
 
-        Collider _attachedCollider;
         GLFigure _fig;
         List<DebugMarker> _debugMarkers;
 
         void OnEnable() {
             _fig = new GLFigure ();
             _debugMarkers = new List<DebugMarker> ();
-            _attachedCollider = GetComponent<Collider> ();
         }
         void OnDisable() {
             if (_fig != null) {
@@ -59,15 +58,18 @@ namespace GardenSystem {
         }
 
         public bool World(Ray ray, out Vector3 worldPosition) {
-            RaycastHit hit;
-            if (_attachedCollider.Raycast (ray, out hit, float.MaxValue)) {
-                _debugMarkers.Add (new DebugMarker (hit.point, 2f * Vector2.one));
-                worldPosition = hit.point;
-                return true;
+            var localOrigin = transform.InverseTransformPoint (ray.origin);
+            var localDirection = transform.InverseTransformVector (ray.direction);
+
+            if (-EPSILON < localDirection.z && localDirection.z < EPSILON) {
+                worldPosition = default(Vector3);
+                return false;
             }
 
-            worldPosition = default(Vector3);
-            return false;
+            var t = -localOrigin.z / localDirection.z;
+            worldPosition = ray.GetPoint (t);
+            _debugMarkers.Add (new DebugMarker (worldPosition, 2f * Vector2.one));
+            return true;
         }
 
         public class DebugMarker {
