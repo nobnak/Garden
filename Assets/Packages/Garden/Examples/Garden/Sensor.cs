@@ -13,22 +13,29 @@ namespace GardenSystem {
         public Planter planter;
         public Dartboard dartboard;
 
+        public bool debugInput;
+        public KeyCode debugToggle = KeyCode.F;
         public Data data;
 
         GLFigure _fig;
 
         void Update() {
-            var mouseButtonFlags = (Input.GetMouseButton (0) ? 1 : 0) 
-                | (Input.GetMouseButton (1) ? 2 : 0);
-            
-            if (mouseButtonFlags != 0) {
-                var uv = targetCamera.ScreenToViewportPoint (Input.mousePosition);
-                Vector3 worldPos;
-                if (Contact(uv, out worldPos)) {
-                    if ((mouseButtonFlags & 1) != 0)
-                        planter.AddCreationMarker (worldPos);
-                    else
-                        planter.AddDestructionMarker (worldPos);
+            if (Input.GetKeyDown (debugToggle))
+                debugInput = !debugInput;
+
+            if (debugInput) {
+                var mouseButtonFlags = (Input.GetMouseButton (0) ? 1 : 0)
+                                       | (Input.GetMouseButton (1) ? 2 : 0);
+                
+                if (mouseButtonFlags != 0) {
+                    var uv = targetCamera.ScreenToViewportPoint (Input.mousePosition);
+                    Vector3 worldPos;
+                    if (Contact (uv, out worldPos)) {
+                        if ((mouseButtonFlags & 1) != 0)
+                            planter.AddCreationMarker (worldPos);
+                        else
+                            planter.AddDestructionMarker (worldPos);
+                    }
                 }
             }
         }

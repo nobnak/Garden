@@ -63,10 +63,30 @@ MonoBehaviour:
   alphaScale: 1
   alphaCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 20
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 30
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 60
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   epochs:
   - fromTime: 0
     toTime: 10
@@ -115,8 +135,8 @@ MonoBehaviour:
     debugInputMode: 0
     debugVisualMode: 1
     debugHoldTime: 0.1
-    debugColorAdd: {r: 0, g: 1, b: 0, a: 0.5}
-    debugColorRemove: {r: 1, g: 0, b: 0, a: 0.5}
+    debugColorAdd: {r: 0, g: 1, b: 0, a: 0.11764706}
+    debugColorRemove: {r: 1, g: 0, b: 0, a: 0.11764706}
     debugRadiusAveragedPoint: 2
     debugColorAveragedPoint: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!114 &11455004
