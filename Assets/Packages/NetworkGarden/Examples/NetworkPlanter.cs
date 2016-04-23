@@ -9,7 +9,7 @@ namespace NetworkGardenSystem {
     
     public class NetworkPlanter : NetworkBehaviour {
         public string nameTargetCam = "Main Camera";
-        public Collider ground;
+        public Dartboard dartboard;
 
         Camera _targetCam;
 
@@ -22,18 +22,16 @@ namespace NetworkGardenSystem {
             if (_targetCam == null)
                 _targetCam = GameObject.Find (nameTargetCam).GetComponent<Camera>();
 
-            if (ground != null) {
-                if (Input.GetMouseButton (0)) {
-                    Ray ray = _targetCam.ScreenPointToRay (Input.mousePosition);
-                    RaycastHit hit;
-                    if (ground.Raycast (ray, out hit, float.MaxValue)) {
-                        RpcAddCreationMarker (hit.point);
-                    }
-                } else if (Input.GetMouseButton (1)) {
-                    Ray ray = _targetCam.ScreenPointToRay (Input.mousePosition);
-                    RaycastHit hit;
-                    if (ground.Raycast (ray, out hit, float.MaxValue))
-                        RpcAddDestructionMarker (hit.point);
+            var mouseFlags = (Input.GetMouseButton (0) ? 1 : 0)
+                | (Input.GetMouseButton (1) ? 2 : 0);
+            if (dartboard != null && mouseFlags != 0) {
+                Ray ray = _targetCam.ScreenPointToRay (Input.mousePosition);
+                Vector3 worldPosition;
+                if (dartboard.World (ray, out worldPosition)) {
+                    if ((mouseFlags & 1) != 0)
+                        RpcAddCreationMarker (worldPosition);
+                    else
+                        RpcAddDestructionMarker (worldPosition);
                 }
             }
         }
