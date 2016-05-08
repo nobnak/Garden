@@ -251,6 +251,8 @@ MonoBehaviour:
   targetCamera: {fileID: 1224466125}
   planter: {fileID: 1906503301}
   dartboard: {fileID: 271108913}
+  debugInput: 0
+  debugToggle: 102
   data:
     limitInput: 10
 --- !u!114 &549489365
@@ -261,40 +263,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 549489362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 580a97464ae387f4bb5d0ced5d8d3f6c, type: 3}
+  m_Script: {fileID: 11500000, guid: b49a3628ccb07464a991273cd9c8eb62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   OnReceive:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 549489364}
-        m_MethodName: OnReceive
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: OSC.CapsuleEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      m_Calls: []
+    m_TypeName: Osc.CapsuleEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   OnError:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 549489364}
-        m_MethodName: OnError
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: OSC.ExceptionEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      m_Calls: []
+    m_TypeName: Osc.ExceptionEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
   localPort: 6666
   defaultRemoteHost: localhost

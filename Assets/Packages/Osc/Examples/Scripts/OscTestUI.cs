@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using OSC;
 using DataUI;
 
 namespace Osc {
@@ -23,21 +22,21 @@ namespace Osc {
 			_clientField = new FieldEditor (clientData);
 		}
 		void OnGUI() {
-			_window = GUILayout.Window (0, _window, Window, "UI");
+			_window = GUILayout.Window (GetInstanceID(), _window, Window, "UI");
 		}
 
 		public void OnServerReceive(OscPort.Capsule c) {
 			Debug.LogFormat ("On Server Receive");
 			if (c.message.path == OSC_PATH) {
 				serverData = JsonUtility.FromJson<Data> ((string)c.message.data [0]);
-				_serverField.Load (serverData);
+				_serverField.Load ();
 			}
 		}
 		public void OnClientReceive(OscPort.Capsule c) {
 			Debug.LogFormat ("On Client Receive");
 			if (c.message.path == OSC_PATH) {
 				clientData = JsonUtility.FromJson<Data> ((string)c.message.data [0]);
-				_clientField.Load (clientData);
+				_clientField.Load ();
 			}
 		}
 		public void OnError(System.Exception e) {

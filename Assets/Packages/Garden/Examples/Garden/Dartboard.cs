@@ -13,7 +13,6 @@ namespace GardenSystem {
         public const float EPSILON = 1e-3f;
 
         public DebugMarkerVisualEnum debugMarkerVisual;
-        public BoundaryModeEnum boundaryMode;
 
         public float debugMarkerLifetime = 1f;
         public Color debugMarkerColor = Color.green;
@@ -43,7 +42,8 @@ namespace GardenSystem {
             _fig.FillQuad (transform.position, transform.rotation, new Vector2 (scale.x, scale.y), debugBoardColor);
         }
         void OnRenderObject() {
-            if (debugMarkerVisual == DebugMarkerVisualEnum.Hide)
+            var visibleLayer = (Camera.current.cullingMask & (1 << gameObject.layer)) != 0;
+            if (debugMarkerVisual == DebugMarkerVisualEnum.Hide || !visibleLayer)
                 return;
 
             var rot = transform.rotation;

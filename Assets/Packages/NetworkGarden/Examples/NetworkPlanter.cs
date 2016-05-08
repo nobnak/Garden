@@ -8,6 +8,9 @@ using UnityEngine.Networking;
 namespace NetworkGardenSystem {
     
     public class NetworkPlanter : NetworkBehaviour {
+        [System.Flags]
+        public enum MarkerTypeEnum { Nil = 0, Creation = 1 << 0, Destruction = 1 << 1 }
+
         public string nameTargetCam = "Main Camera";
         public Dartboard dartboard;
 
@@ -22,27 +25,36 @@ namespace NetworkGardenSystem {
             if (_targetCam == null)
                 _targetCam = GameObject.Find (nameTargetCam).GetComponent<Camera>();
 
-            var mouseFlags = (Input.GetMouseButton (0) ? 1 : 0)
-                | (Input.GetMouseButton (1) ? 2 : 0);
+            var mouseFlags = (Input.GetMouseButton (0) ? MarkerTypeEnum.Creation : MarkerTypeEnum.Nil)
+                             | (Input.GetMouseButton (1) ? MarkerTypeEnum.Destruction : MarkerTypeEnum.Nil);
             if (dartboard != null && mouseFlags != 0) {
-                Ray ray = _targetCam.ScreenPointToRay (Input.mousePosition);
-                Vector3 worldPosition;
-                if (dartboard.World (ray, out worldPosition)) {
-                    if ((mouseFlags & 1) != 0)
-                        RpcAddCreationMarker (worldPosition);
-                    else
-                        RpcAddDestructionMarker (worldPosition);
-                }
+                var uv = _targetCam.ScreenToViewportPoint (Input.mousePosition);
+                MarkInNormalziedCoord (uv, mouseFlags);
+            }
+        }
+
+        public void MarkInNormalziedCoord(Vector2 uv, MarkerTypeEnum markerType) {
+            var viewport = _targetCam.rect;
+            var posInViewport = new Vector2 (uv.x * viewport.width + viewport.x, uv.y * viewport.height + viewport.y);
+            var ray = _targetCam.ViewportPointToRay (posInViewport);
+            Vector3 worldPosition;
+            if (dartboard.World (ray, out worldPosition)) {
+                if ((markerType & MarkerTypeEnum.Creation) != 0)
+                    RpcAddCreationMarker (worldPosition);
+                else
+                    RpcAddDestructionMarker (worldPosition);
             }
         }
 
         [ClientRpc]
         void RpcAddCreationMarker(Vector3 worldPoint) {
-            Planter.Instance.AddCreationMarker (worldPoint);
+            if (Planter.Instance != null)
+                Planter.Instance.AddCreationMarker (worldPoint);
         }
         [ClientRpc]
         void RpcAddDestructionMarker (Vector3 worldPoint) {
-            Planter.Instance.AddDestructionMarker (worldPoint);
+            if (Planter.Instance != null)
+                Planter.Instance.AddDestructionMarker (worldPoint);
         }
     }
 }

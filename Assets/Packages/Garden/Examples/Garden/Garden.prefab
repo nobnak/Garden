@@ -130,7 +130,7 @@ MonoBehaviour:
   data:
     perturbation: 1.5
     searchRadius: 1
-    limitNeighborCount: 40
+    limitNeighborCount: 10
   debugData:
     debugInputMode: 0
     debugVisualMode: 1
