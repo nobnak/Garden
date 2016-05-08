@@ -124,18 +124,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 11420990, guid: 591d5464ad72fb141b003e3103fb010c, type: 2}
-      propertyPath: debugMarkerColor.r
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11420990, guid: 591d5464ad72fb141b003e3103fb010c, type: 2}
-      propertyPath: debugMarkerColor.g
-      value: 0.75399995
-      objectReference: {fileID: 0}
-    - target: {fileID: 11420990, guid: 591d5464ad72fb141b003e3103fb010c, type: 2}
-      propertyPath: debugMarkerColor.b
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 591d5464ad72fb141b003e3103fb010c, type: 2}
   m_IsPrefabParent: 0
@@ -207,14 +195,18 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 11455004, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
-      propertyPath: targetCam
-      value: 
-      objectReference: {fileID: 2055881137}
     - target: {fileID: 11468636, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
       propertyPath: targetCamera
       value: 
       objectReference: {fileID: 2055881137}
+    - target: {fileID: 11455004, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: targetCam
+      value: 
+      objectReference: {fileID: 2055881137}
+    - target: {fileID: 11431416, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
+      propertyPath: debugData.debugInputMode
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: deae66bd59bc35249918fd8aef317cfe, type: 2}
   m_IsPrefabParent: 0
