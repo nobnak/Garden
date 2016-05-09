@@ -108,12 +108,16 @@ namespace GardenSystem {
                 animator.SetStencil (p, TIME_STENCIL_DIE);
             }
         }
-
         public virtual GameObject Instantiate(int typeId) {
             return Instantiate (plantfabs [typeId].gameObject);
         }
-
-
+        public bool PositionVisibility(Vector3 worldPos) {
+            var viewportPos = garden.targetCamera.WorldToViewportPoint (worldPos);
+            var viewport = garden.targetCamera.rect;
+            return viewport.xMin < viewportPos.x && viewportPos.x < viewport.xMax &&
+                viewport.yMin < viewportPos.y && viewportPos.y < viewport.yMax;
+        }
+        
         Vector3 WorldMousePos() {
             var garden2camInWorld = garden.transform.position - garden.targetCamera.transform.position;
             var mousePos = Input.mousePosition;

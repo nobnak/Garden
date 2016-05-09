@@ -10,9 +10,11 @@ namespace NetworkGardenSystem {
     public class NetworkPlanter : NetworkBehaviour {
         [System.Flags]
         public enum MarkerTypeEnum { Nil = 0, Creation = 1 << 0, Destruction = 1 << 1 }
+        public enum BoundaryConditionEnum { Clamped = 0, Free }
 
         public string nameTargetCam = "Main Camera";
         public Dartboard dartboard;
+        public BoundaryConditionEnum boundaryCondition;
 
         Camera _targetCam;
 
@@ -48,13 +50,17 @@ namespace NetworkGardenSystem {
 
         [ClientRpc]
         void RpcAddCreationMarker(Vector3 worldPoint) {
-            if (Planter.Instance != null)
-                Planter.Instance.AddCreationMarker (worldPoint);
+            if (Planter.Instance != null) {
+                if (boundaryCondition != BoundaryConditionEnum.Clamped || Planter.Instance.PositionVisibility(worldPoint))
+                    Planter.Instance.AddCreationMarker (worldPoint);
+            }
         }
         [ClientRpc]
         void RpcAddDestructionMarker (Vector3 worldPoint) {
-            if (Planter.Instance != null)
-                Planter.Instance.AddDestructionMarker (worldPoint);
+            if (Planter.Instance != null) {
+                if (boundaryCondition != BoundaryConditionEnum.Clamped || Planter.Instance.PositionVisibility(worldPoint))
+                    Planter.Instance.AddDestructionMarker (worldPoint);
+            }
         }
     }
 }
